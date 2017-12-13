@@ -37,10 +37,7 @@ $PAGE_SECTION_FIELDS = "<input type='hidden' name='page_id' value='{$page_id}'>
 
 include('common.php');
 
-include_once(WB_PATH."/modules/windows/include.php");
-if(function_exists('include_mod_windows')) include_mod_windows();
-include_once(WB_PATH."/modules/media_effects/include.php");
-if(function_exists('include_mod_media_effects')) include_mod_media_effects(['functions.js']);
+if(function_exists('wbs_core_include')) wbs_core_include(['functions.js', 'windows.js', 'windows.css']);
 ?>
 
 <style>

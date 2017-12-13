@@ -57,8 +57,7 @@ else $order_by = 'prod_title';
     <?php echo $minishop_settings['window_css']; ?>
 </style>
 
-<?php if(function_exists('include_mod_media_effects')) include_mod_media_effects(['functions.js']); ?>
-<?php if(function_exists('include_mod_windows')) include_mod_windows(); ?>
+<?php if(function_exists('wbs_core_include')) wbs_core_include(['functions.js', 'windows.js', 'windows.css']); ?>
 
 <script>
     var section_id = <?php echo $section_id; ?>;

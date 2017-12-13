@@ -18,6 +18,7 @@ $_section_id = mysql_escape_string($section_id);
 
 $sql = "SELECT * FROM `" .TABLE_PREFIX ."mod_minishop_products` WHERE `section_id` = '".$_section_id."'";
 if ($database->query($sql)->numRows() > 0 ) {
+    $admin->print_header();
     $admin->print_error('Секция не удалена: в магазине есть товары!', ADMIN_URL.'/pages/sections.php?page_id='.$page_id);
     die();
 }
