@@ -1,0 +1,34 @@
+<script>
+  function mod_minishop_change_category(form) {
+      if (form.category_id.value == 0) {
+          form.category_name.value = '';
+          form.button.value = 'Создать';
+      } else {
+          form.category_name.value = form.category_id.selectedOptions[0].textContent;
+          form.button.value = 'Переименовать';
+      }
+  }
+  
+  function mod_minishop_func_success_cat_edit(res, form) {
+      if (form.category_id.value == 0) {
+          $(form.category_id).append("<option value='"+res.data.id+"'>"+res.data.name+"</option>");
+      } else {
+          form.category_id.selectedOptions[0].textContent = form.category_name.value;
+      }
+  }
+</script>
+
+<form id="{{ page_id }}_{{ section_id }}_cats" name="update_category_form" method="post" class="minishop_update_category_form">
+    {{ FTAN|raw }}
+    {{ PAGE_SECTION_FIELDS|raw }}
+
+    <select name="category_id" onchange="mod_minishop_change_category(this.form)">
+	    <option value="0">Создать категорию</option>
+	    {% for key, category in categories %}
+	        <option value={{ key }}>{{ category }}</option>
+	    {% endfor %}
+    </select>
+
+    <input name="category_name" type="text" placeholder="Название">
+    <input name="button" type="button" value="Создать" onclick="sendform(this, 'save_category_edit', {url:mod_minishop.url_api, arg_func_success: this.form, func_success:mod_minishop_func_success_cat_edit})"><br>
+</form>

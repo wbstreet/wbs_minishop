@@ -1,0 +1,1 @@
+mod_minishop_set_count_products()

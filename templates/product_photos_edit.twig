@@ -1,0 +1,91 @@
+<script>
+    function photo_load(btn) {
+        sendform(btn, 'photo_load', {
+            data: {
+                prod_id: '{{ prod_id }}',
+                page_id: '{{ page_id }}',
+                section_id: '{{ section_id }}'
+            },
+            func_after: function() {
+                W.close(btn);
+                open_window_photos('{{ prod_id }}')
+            },
+            answer_type: 'Notification',
+            url:mod_minishop.url_api}
+        );
+    }
+
+    function photo_delete(btn) {
+        if (!confirm("Удалить данную фотографию навсегда?")) return;
+
+        photo_id = btn.closest('tr').dataset.photo_id;
+    
+        sendform(btn, 'photo_delete', {
+            data: {
+                photo_id: photo_id,
+                page_id: '{{ page_id }}',
+                section_id: '{{ section_id }}'
+            },
+            func_success: function(res, arg) {
+                btn.closest('tr').remove();
+            },
+            answer_type: 'Notification',
+            url:mod_minishop.url_api
+        });
+    }
+    
+    function photo_change_main(btn) {
+        photo_id = btn.closest('tr').dataset.photo_id;
+        sendform(btn, 'photo_change_main', {
+            data: {
+                prod_id: '{{ prod_id }}',
+                photo_id: photo_id,
+                page_id: '{{ page_id }}',
+                section_id: '{{ section_id }}'
+            },
+            answer_type: 'Notification',
+            url:mod_minishop.url_api
+        });
+    }
+</script>
+
+<style>
+    .table_photos td {
+        padding-top: 20px;
+    }
+</style>
+
+<form>
+    Загрузить фотографии: <input type='file' name='photos[]' multiple>
+    <input type='button' value='Загрузить' onclick="photo_load(this)">
+</form>
+
+<br>
+
+<table class="table_photos">
+    <tbody>
+
+        {% for photo in photos %}
+
+            <tr data-photo_id='{{ photo.photo_id }}'>
+                <td>
+                    <input type="radio" name="is_main" onchange="photo_change_main(this)" {% if photo.photo_is_main == '1' %} checked {% endif %}>
+                </td>
+                <td>
+                    <img src='{{ photo.photo_url }}' style='width:100px;height:auto;'>
+                </td>
+                <!--<td>
+                    <input type='file' name='photo'><br><input type='button' value='Заменить'>
+                </td>-->
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <input type='button' value='Удалить' onclick="photo_delete(this)">
+                </td>
+            </tr>
+    
+        {% endfor %}
+
+    </tbody>
+</table>

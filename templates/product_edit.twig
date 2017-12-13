@@ -1,0 +1,76 @@
+{{ FTAN|raw }}
+<input name="prod_id" type="hidden" value="{{ product.prod_id }}">
+{{ PAGE_SECTION_FIELDS|raw }}
+
+<table>
+    <tr>
+        <td>Фотографии:</td>
+        <td><input type="button" value="Редактировать" onclick="open_window_photos('{{ product.prod_id }}')"></td>
+    </tr>
+    <tr>
+        <td>Название:</td>
+        <td><input name="prod_title" type="text" value="{{ product.prod_title }}"></td>
+    </tr>
+    <tr>
+        <td>Краткое описание:</td>
+        <td><textarea name="prod_shortdesc" style='width:400px;height:50px;'>{{ product.prod_shortdesc }}</textarea></td>
+    </tr>
+    <tr>
+        <td>Описание:</td>
+        <td><textarea name="prod_desc" style='width:400px;height:100px;'>{{ product.prod_desc }}</textarea></td>
+    </tr>
+    <tr>
+        <td>Стоимость:</td>
+        <td><input name="prod_price" type="text" value="{{ product.prod_price }}" ></td>
+    </tr>
+    <tr>
+       <td> Количество:</td>
+       <td> <input name="prod_count" type="number" value="{{ product.prod_count }}" ></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input name="prod_is_active" {% if product.prod_is_active == '1' %} checked {% endif %} type="checkbox"> Активный</td>
+    </tr>
+    <tr>
+        <td>Хит продаж</td>
+        <td>
+            <select name="prod_is_hit">
+                <option value='0' {% if product.prod_is_hit == '0' %} selected {% endif %}>Нет</option>
+                <option value='1' {% if product.prod_is_hit == '1' %} selected {% endif %}>Да</option>
+                <option value='2' {% if product.prod_is_hit == '2' %} selected {% endif %}>Автоопределение</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Входит в категорию:</td>
+        <td>
+		    <select name="prod_category_id">
+			    <option value="0">Вне категорий</option>
+			    {% for key, category in categories %}
+			        <option value="{{ key }}" {% if product.prod_category_id == key  %} selected {% endif %}>{{ category }}</option>
+			    {% endfor %}
+		    </select>
+
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td>Характеристики:</td>
+        <td>
+            {% for prop in props %}
+	            <div class='prop_name' data-prop_id='{{ prop.prop_id }}'>
+	            <input type='button' onclick="$(this.parentElement.children[2]).toggle()" value='значения'>
+	            {{ prop.prop_name }}<br>
+	            
+	            <div class='prop_values'>
+	            {% for prop_value in prop.values %}
+	                &nbsp;&nbsp;&nbsp;&nbsp;<label><input type='checkbox' name='prop_value[]' value='{{ prop_value.prop_value_id }}' {{ prop_value.checked }}>{{ prop_value.value }}</label><br>
+	            {% endfor %}
+	            </div></div>
+            {% endfor %}
+            <br>
+        </td>
+    </tr>
+</table>
+
+<input type="button" value="Сохранить" onclick="sendform(this, 'update_product', {url:mod_minishop.url_api})">

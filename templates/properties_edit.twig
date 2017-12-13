@@ -1,0 +1,30 @@
+<form style='border:1px solid #fff; border-radius:10px;' name="create_prop_form" method="post" class="minishop_create_prop_form block">
+    {{ FTAN|raw }}
+    {{ PAGE_SECTION_FIELDS|raw }}
+    
+    Создать новую: <input type="text" placeholder='название' name="prop_name"> <input type='button' value='Создать' onclick="sendform(this, 'create_prop', {url:mod_minishop.url_api, arg_func_success: this, func_success:function(res, arg){console.log(arg.form.prop_name.value)}})">
+</form><br>
+
+Характеристики (нажмите на имя для переименования):<br>
+
+{% for prop in props %}
+
+    <div class='prop_name' data-prop_id='{{ prop.prop_id }}'>
+    <input type='button' onclick="$(this.parentElement.children[3]).toggle()" value='значения'>
+    <span onclick='toggle_edit(this)' data-status='view'>{{ prop.prop_name }}</span><br>
+    
+    <div class='prop_values'>
+    <form method='post'>
+         {{ FTAN|raw }}
+         {{ PAGE_SECTION_FIELDS|raw }}
+         <input type='hidden' name='prop_id' value='{{ prop.prop_id }}'>
+         &nbsp;&nbsp;&nbsp;&nbsp;<input type='text' placeholder='новое значение' name='prop_value'> <input type='button' value='Добавить' onclick="sendform(this, 'create_prop_value', {url:mod_minishop.url_api, arg_func_success: this, func_success:function(res, arg){console.log(arg.form.prop_value.value)}})">
+    </form>
+
+    {% for prop_value in prop.prop_values %}
+        &nbsp;&nbsp;&nbsp;&nbsp;{{ prop_value.value }}<br>
+    {% endfor %}
+
+    </div></div>
+
+{% endfor %}

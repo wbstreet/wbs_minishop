@@ -1,0 +1,32 @@
+<form id="{{ page_id }}_{{ section_id }}_settings" method="post">
+    {{ PAGE_SECTION_FIELDS|raw }}
+
+    <span class="minishop_title_2">Товарная плитка</span><br>
+    HTML товарной плитки: <br>
+    <textarea name="block_html">{{ settings.block_html }}</textarea><br>
+    CSS товарной плитки и всплывающего окна: <br>
+    <textarea name="block_css">{{ settings.block_css }}</textarea><br>
+
+    HTML всплывающего окна: <br>
+    <textarea name="window_html">{{ settings.window_html }}</textarea><br>
+    <!--CSS всплывающего окна: <br>
+    <textarea name="window_css">{{ settings.window_css }}</textarea><br>-->
+
+    <br><span class="minishop_title_2">Администрирование</span>
+
+    Логин администратора: <input name="admin_login" type="text" value="{{ settings.admin_login }}"><br>
+    Электронная почта: <input name="admin_email" type='email' value="{{ settings.admin_email }}"> (на неё высылаются уведомления о заказах)<br>
+    <br>Способ доставки:<br>
+    Доставка: <input type="checkbox" {% if settings.has_delivery == '1' %} checked {% endif %} name="has_delivery"><br>
+    Самовывоз: <input type="checkbox" {% if settings.has_self_delivery == '1' %} checked {% endif %} name="has_self_delivery">
+    Адрес самовывоза: <input type="text" name="address_self_delivery" value="{{ settings.address_self_delivery }}">
+
+    <br><span class="minishop_title_2">Область действия настроек</span>
+    <label><input type='radio' name='is_general_settings' value='2' {% if settings.is_general_settings == '2' %} checked {% endif %}>На всём сайте</label>
+    <!--<label><input type='radio' name='is_general_settings' value='1' {% if settings.is_general_settings == '1' %} checked  {% endif %}>На всей странице</label>-->
+    <label><input type='radio' name='is_general_settings' value='0' {% if settings.is_general_settings == '0' %} checked {% endif %}>На секции</label>
+
+    <br><br>
+    <input type="button" value="Сохранить" onclick="sendform(this, 'save_settings_edit', {url:mod_minishop.url_api})">
+    <input type="button" value="Сохранить и закрыть" onclick="sendform(this, 'save_settings_edit', {url:mod_minishop.url_api, arg_func_success: this, func_success:function(res, arg){W.close(arg)}})">
+</form>

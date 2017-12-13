@@ -1,0 +1,29 @@
+#confirm_order_form {display: none;}
+
+.order_head {height: 25px; background: #334C90; width: 90%; margin: 2px 0 0 0; padding-left: 10px; cursor: pointer; color: #ffffff; }
+.order_detail {background: rgba(51, 76, 144, 0.6); width: calc(90% + 10px); margin: 0 0 0 0; padding-top: 0px; color: #eeffee;}
+.order_details_line:first-child {border-bottom: 1px solid #334C90;}
+.order_details_line {height: 20px; width: 90%; margin: 0 0 0 5%; padding-left: 10px;}
+.order_details_line span {margin-right: 5px;}
+
+.button_more, .button_delete {float: right; cursor: pointer;margin-right: 5px; display: inline-block;}
+.button_delete {padding: 1px 6px 2px 6px; background: #55bb55; border-radius: 6px;}
+
+.menubody {display:none; width: 98%; margin: auto; color:#ececec;}
+#menubody_user_data {margin: 0 0 0 0;}
+#user_data_form .inputs {display: inline-block; text-align: right;}
+
+#button_hide_menu_data {display: none;}
+.minishop_button_menu {display:inline-block; background: #334C90; cursor:pointer;color: #fff; font-size: 13pt; text-align:center; padding: 10px 5px 10px 5px;}
+
+.button_add2cart {display:inline-block; width:90%; background: rgba(51, 76, 144, 0.6) ; cursor:pointer;color: #fff;}
+.product_count2cart {width: 50px;}
+
+.button_delete_prod_from_cart {
+    cursor: pointer;
+    width: 20px;
+}
+
+.prod_count_cart_list input{
+    width:80px;
+}

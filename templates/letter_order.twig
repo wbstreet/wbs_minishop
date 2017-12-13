@@ -1,0 +1,42 @@
+<h2>Данные заказчика</h2>
+
+<b>ФИО:</b> {{ fio }} <br>
+<b>Телефон: </b> {{ phone }} <br>
+<b>Комментарий к заказу:</b> {{ comment }} <br>
+
+<h2>Товары</h2>
+
+<table>
+    <tr>
+		<th width="20">№</th>
+		<th width="20">ID</th>
+		<th width="400">Название</th>
+		<th width="80">Кол-во</th>
+		<th width="60">Цена за 1 ед.</th>
+		<th width="70">Цена * Кол-во</th>
+    </tr>
+    
+    {% set summ_price = 0 %}
+    
+    {% for prod in prods %}
+
+       {% set total_price = prod.count_to_order * prod.prod_price %}
+    
+       	<tr>
+	        <td> {{ loop.index }} </td>
+	        <td> {{ prod.prod_id }} </td>
+	        <td> {{ prod.prod_title }} </td>
+	        <td> {{ prod.count_to_order }} </td>
+	        <td> {{ prod.prod_price }} </td>
+	        <td> {{ total_price }} </td>
+    	</tr>
+    	
+    	{% set summ_price = summ_price + total_price %}
+    
+    {% endfor %}
+    
+</table>
+
+<br> Итоговая сумма оплаты за заказ: {{ summ_price }}
+<br> Способ доставки: <b>{{ delivery }}</b>
+{% if delivery_address != '' %} <br> Адрес для доставки: <b>{{ delivery_address }}</b> {% endif %}

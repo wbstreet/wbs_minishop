@@ -1,0 +1,41 @@
+<div id="product_cart_list_wrapper" style="display:none;position: absolute;background:#eee;color:#000;text-align:left;z-index:10;">
+	<!-- >>> Шаблон корзины -->
+	<table style="text-align:left;">
+	    <tr style="text-align:center;">
+	        <th width="10">No</th>
+	        <th width="400">Название</th>
+	        <th width="60">Стоимость</th>
+	        <th width="30">Кол-во</th>
+	        <th width="5"></th>
+	    </tr>
+	    <tbody id="product_cart_list2"></tbody>
+	</table>
+	<span>Итоговая стоимость: <span id="total_price"></span></span> <br>
+	<br>
+	<!-- <<< Шаблон корзины -->
+	
+	<input id="mod_minishop_open_order_from" type="button" value="Оформить заказ" onclick="$('#mod_minishop_order_form').fadeToggle(); this.style.display='none';">
+	<br>
+	
+	<form id="mod_minishop_order_form" style="display:none;">
+		Как к Вам обращаться: <input type="text" name="fio"><br>
+		Ваш телефон: <input type="text" name="phone"><br>
+		Способ доставки:
+		<select name="delivery" onchange="if (this.value=='deliv') {document.getElementById('delivery_address').style.display='inline-block';} else {document.getElementById('delivery_address').style.display='none';}">
+		    <option value="self" checked>Самовывоз</option>
+		    <option value="deliv">Доставка</option>
+		</select><br>
+		<span style="display:none;" id="delivery_address">Куда доставить заказ? <input type="text" name="delivery_address"><br></span>
+		Комментарий к заказу: <br>
+		<textarea name="comment" cols="30" rows="3"></textarea><br><br>
+
+		<span style="text-align: right;">Защита от спама:</span>
+		[[captcha?part=image]] = [[captcha?part=input]]<br>
+
+		<br><input type='checkbox' name='i_agree' required> Согласен (на) с условиями <a onclick="W.open_by_api('get_agreement')" style='cursor:pointer;'>Пользовательского соглашения</a><br>
+
+		<input type="button" value="Подтвердить" onclick="mod_minishop.order_confirm(this);">
+		<input type="button" value="Отменить" onclick="$('#mod_minishop_order_form').fadeToggle(); $('#mod_minishop_open_order_from').css({display:''});">
+	</form>
+
+</div>
