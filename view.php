@@ -69,6 +69,9 @@ else $order_by = 'prod_title';
     mod_minishop = new mod_minishop_Main(section_id, page_id);
 </script>
 
+<?php $clsMinishop->print_cart_btn(); ?>
+<?php $clsMinishop->print_cart(); ?>
+
 <div style='float:right;'>
     Сортировать по
     <select onchange='window.location.search = "?sorted_by=" + this.value;'>
