@@ -66,18 +66,8 @@ if ($action == 'content_confirm_order') {
 
     if (count($products) == 0) print_error("Не выбраны товары!");
 	
-	// Определяем сайт
-	if (!class_exists('idna_convert', false)) require_once(WB_PATH.'/include/idna_convert/idna_convert.class.php');
-	$IDN = new idna_convert();
-	$url = $IDN->decode(WB_URL);
-
-    // класс почтовика
-    include('../../include/phpmailer/class.phpmailer.php');
-    $mail = new PHPMailer();
-    $mail->IsMail();
-    $mail->IsHtml(true);
-    $mail->CharSet = "utf-8";
-    $mail->Subject = "Заказ из магазина $url";
+    // Определяем сайт
+    list($url, $is_true) = idn_decode(WB_URL);
 
     // формирование тела письма
 
@@ -103,9 +93,7 @@ if ($action == 'content_confirm_order') {
 
     $minishop_settings = $clsMinishop->get_settings();
 
-	$mail->AddAddress($minishop_settings['admin_email']);
-    //$mail->AddAddress('adres.t@bk.ru');
-    $mail->Body = $twig->render('letter_order.twig', [
+    $body = $twig->render('letter_order.twig', [
     	'fio'=>$fio,
     	'phone'=>$phone,
     	'prods'=>$prods,
@@ -114,7 +102,14 @@ if ($action == 'content_confirm_order') {
     	'delivery_address'=>$delivery_address,
     ]);
 
-    if(!$mail->Send()) print_error('Ошибка отправки письма!'.$mail->ErrorInfo);
+    $r = $clsEmail->send(
+        $minishop_settings['admin_email'],
+        $body,
+        "Заказ из магазина $url",
+        0, false
+    );
+    if ($r[0] !== true) print_error('Письмо не отправлено! ');
+    
     print_success('Заказ успешно отправлен Администратору магазина');
 
 } else if ($action == 'get_product_data') {
