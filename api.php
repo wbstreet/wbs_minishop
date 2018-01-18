@@ -55,7 +55,7 @@ if ($action == 'content_confirm_order') {
 
 	$i_agree = $clsFilter->f('i_agree', [['variants', "Вы должны согласитиься с пользовательским соглашением!", ['true']]], 'append', '');
 
-	$captcha = $clsFilter->f('captcha', [['variants', "Вы должны пройти защиту от спама!", [$_SESSION['captcha']]]], 'append', '');	
+	$captcha = $clsFilter->f('captcha', [['1', "Введите Защитный код!"], ['variants', "Введите Защитный код!", [$_SESSION['captcha']]]], 'append', '');
 
 	if ($clsFilter->is_error()) $clsFilter->print_error();
 
@@ -102,12 +102,18 @@ if ($action == 'content_confirm_order') {
     	'delivery_address'=>$delivery_address,
     ]);
 
-    $r = $clsEmail->send(
-        $minishop_settings['admin_email'],
-        $body,
-        "Заказ из магазина $url",
-        0, false
-    );
+    $r = $clsEmail->send(
+
+        $minishop_settings['admin_email'],
+
+        $body,
+
+        "Заказ из магазина $url",
+
+        0, false
+
+    );
+
     if ($r[0] !== true) print_error('Письмо не отправлено! ');
     
     print_success('Заказ успешно отправлен Администратору магазина');
