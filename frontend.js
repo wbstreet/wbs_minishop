@@ -8,7 +8,7 @@ License: public domain :)
 mod_minishop_current_prodform = null;
 
 function mod_minishop_isHasFavourite(org_id) {
-	return localStorage.hasOwnProperty(org_id);
+        return localStorage.hasOwnProperty(org_id);
 }
 
 /* -------   Корзина ------------- */
@@ -53,15 +53,15 @@ function mod_minishop_get_count_products_in_cart() {
 
 function mod_minishop_get_product_from_cart(prod_id) {
     
-	return JSON.parse(localStorage.getItem('cart_product_'+prod_id));
+        return JSON.parse(localStorage.getItem('cart_product_'+prod_id));
 }
 
 
 /* -------   Корзина HTML ------------- */
 
 function mod_minishop_set_count_products() {
-	"use strict"
-	let count = mod_minishop_get_count_products_in_cart();
+        "use strict"
+        let count = mod_minishop_get_count_products_in_cart();
     let els = document.querySelectorAll('.mod_minishop_count_in_cart');
     for (let el of els) { el.textContent = count; }
 }
@@ -89,55 +89,55 @@ function mod_minishop_create_order(prod_objs, user_data) {
 "use strict";
 
 class mod_minishop_Cart {
-	constructor() {
-	}
-	
-	add(prod_id, prod_count, show_note=true) {
-	    let name = 'cart_product_';
-	    let prod_obj = {};
+        constructor() {
+        }
+        
+        add(prod_id, prod_count, show_note=true) {
+            let name = 'cart_product_';
+            let prod_obj = {};
         prod_obj['count'] = prod_count;
         prod_obj['prod_id'] = prod_id;
         localStorage.setItem(name+prod_id, JSON.stringify(prod_obj));
-	}
+        }
 
-	remove(prod_id) {
-	    let name = 'cart_product_';
+        remove(prod_id) {
+            let name = 'cart_product_';
         localStorage.removeItem(name+prod_id);
-	}
-	
-	get() {
-		
-	}
-	
-	get_all() {
-		 return mod_minishop_collect_products_from_cart();
-	}
+        }
+        
+        get() {
+                
+        }
+        
+        get_all() {
+                return mod_minishop_collect_products_from_cart();
+        }
 }
 
 class mod_minishop_Main {
-	
-	constructor() {
-		this.cart = new mod_minishop_Cart();
-		this.url_mod = WB_URL + '/modules/wbs_minishop/'
-		this.url_api = this.url_mod + 'api.php';
-		
-		this.cart_add = this.cart_add.bind(this);
-		this.cart_show_form = this.cart_show_form.bind(this);
-		this.cart_show_list = this.cart_show_list.bind(this);
-		this.cart_recount_list = this.cart_recount_list.bind(this);
-		this.order_confirm = this.order_confirm.bind(this);
-	}
-	
+        
+        constructor() {
+                this.cart = new mod_minishop_Cart();
+                this.url_mod = WB_URL + '/modules/wbs_minishop/'
+                this.url_api = this.url_mod + 'api.php';
+                
+                this.cart_add = this.cart_add.bind(this);
+                this.cart_show_form = this.cart_show_form.bind(this);
+                this.cart_show_list = this.cart_show_list.bind(this);
+                this.cart_recount_list = this.cart_recount_list.bind(this);
+                this.order_confirm = this.order_confirm.bind(this);
+        }
+        
     /*request(api_name, data, sets) {
-    	data['action'] = api_name;
-    	sets['data'] = data;
-    	sets['type'] = 'POST';
+        data['action'] = api_name;
+        sets['data'] = data;
+        sets['type'] = 'POST';
         $.ajax(this.mod_url + 'api.php', sets);
     }*/
     
     /*sendform(btn, action, data) {
         data['url'] = this.url_api;
-    	sendform(btn, action, data);
+        sendform(btn, action, data);
     }*/
     
     get_prod_data(el) {
@@ -184,13 +184,13 @@ class mod_minishop_Main {
         console.log(prod);
 
         prod.count_to_cart = Number(prod.count_to_cart);
-	    if (prod.count_to_cart <= 0) {
-	        this.cart.remove(prod.prod_id);
-	        showNotification('Удалено из корзины', 'note', 1000);
-	    } else {
-	        this.cart.add(prod.prod_id, prod.count_to_cart);
-	        showNotification('Добавлено в корзину', 'note', 1000);
-	    }
+            if (prod.count_to_cart <= 0) {
+                this.cart.remove(prod.prod_id);
+                showNotification('Удалено из корзины', 'note', 1000);
+            } else {
+                this.cart.add(prod.prod_id, prod.count_to_cart);
+                showNotification('Добавлено в корзину', 'note', 1000);
+            }
 
         //mod_minishop_show_menu_cart(); 
         mod_minishop_set_count_products();
@@ -198,71 +198,72 @@ class mod_minishop_Main {
     }
     
     cart_show_list() {
-    	//if (getComputedStyle(el_for_insert).display == "none") {el_for_insert.style.display = "block";}
-    	//else {el_for_insert.style.display = "none"; return;}
+        //if (getComputedStyle(el_for_insert).display == "none") {el_for_insert.style.display = "block";}
+        //else {el_for_insert.style.display = "none"; return;}
 
         let el_for_insert = document.getElementById('product_cart_list2');
-	    el_for_insert.innerHTML = "";
+            el_for_insert.innerHTML = "";
 
-	    let prod_objs = this.cart.get_all();
+            let prod_objs = this.cart.get_all();
 
         sendform(document.createElement('p'), 'get_product_data', {
-        	data: {products: JSON.stringify(prod_objs)},
-        	answer_type: 'Notification',
+                data: {products: JSON.stringify(prod_objs)},
+                answer_type: 'Notification',
             url:this.url_api,
             arg_func_success: prod_objs,
             func_success: function(res, prod_objs) {
-			    let prod_html = '';
-			    let total_price = 0
-			    let i = 0;
-			    for (let prod_id in res['data']) {
-			    	let prod = res['data'][prod_id];
-			    	let prod_cart = prod_objs[prod.prod_id];
+                            let prod_html = '';
+                            let total_price = 0
+                            let i = 0;
+                            for (let prod_id in res['data']) {
+                                let prod = res['data'][prod_id];
+                                let prod_cart = prod_objs[prod.prod_id];
 
-			        prod_html += `<tr id="cartlist${prod.prod_id}" data-prod_id="${prod.prod_id}">
-			        <td>${i+1}. </td>
-			        <td>${prod.prod_title}</td>
-			        <td>${prod.prod_price}</td>
-			        <td class="prod_count_cart_list"><input onchange="mod_minishop.cart.add(${prod.prod_id}, this.value); mod_minishop.cart_show_list()" type="number" value="${prod_cart.count}"></td>
-			        <td class="button_delete_prod_from_cart" onclick="mod_minishop.cart.remove(${prod.prod_id}); mod_minishop_set_count_products(); mod_minishop.cart_show_list(); ">X</td>
-			        </tr>`;
-		
-			        total_price += prod_cart.count * prod.prod_price
-			        i += 1;
-			    }
-			    document.getElementById('total_price').innerHTML = total_price
-			    el_for_insert.innerHTML = prod_html
-			    //mod_minishop_show_menu_user_data(2);            	
+                                prod_html += `<tr id="cartlist${prod.prod_id}" data-prod_id="${prod.prod_id}">
+                                <td>${i+1}. </td>
+                                <td>${prod.prod_title}</td>
+                                <td>${prod.prod_price}</td>
+                                <td class="prod_count_cart_list"><input onchange="mod_minishop.cart.add(${prod.prod_id}, this.value); mod_minishop.cart_show_list()" type="number" value="${prod_cart.count}"></td>
+                                <td class="button_delete_prod_from_cart" onclick="mod_minishop.cart.remove(${prod.prod_id}); mod_minishop_set_count_products(); mod_minishop.cart_show_list(); ">X</td>
+                                </tr>`;
+                
+                                total_price += prod_cart.count * prod.prod_price
+                                i += 1;
+                            }
+                            document.getElementById('total_price').innerHTML = total_price
+                            el_for_insert.innerHTML = prod_html
+                            //mod_minishop_show_menu_user_data(2);            	
             }
         });
     }
     
     cart_recount_list() {
-	    let pcl = document.getElementById('product_cart_list2').children;
-	    for (let i=0; i< pcl.length; i++) {
-	        let prod_tag = pcl[i];
-	        let prod_count = prod_tag.querySelector('.prod_count_cart_list').children[0].value;
-	        if (prod_count == 0) {prod_tag.remove();  i-=1;}
-	        this.cart.add(prod_tag.dataset.prod_id, prod_count);
-	    }
-	    mod_minishop_set_count_products();
-	    this.cart_show_list();
-	}
-	
-	order_confirm(btn) {
-		let prod_objs = this.cart.get_all();
+            let pcl = document.getElementById('product_cart_list2').children;
+            for (let i=0; i< pcl.length; i++) {
+                let prod_tag = pcl[i];
+                let prod_count = prod_tag.querySelector('.prod_count_cart_list').children[0].value;
+                if (prod_count == 0) {prod_tag.remove();  i-=1;}
+                this.cart.add(prod_tag.dataset.prod_id, prod_count);
+            }
+            mod_minishop_set_count_products();
+            this.cart_show_list();
+        }
+        
+        order_confirm(btn) {
+                let prod_objs = this.cart.get_all();
 
-		sendform(btn, 'content_confirm_order', {
-			data:{
-				products: JSON.stringify(prod_objs)
-			},
-			arg_func_success: [prod_objs, this],
-			func_success: function(res, arg) {
-				for (let prod_id in arg[0]) { arg[1].cart.remove(prod_id); }
-        	    mod_minishop_set_count_products();
-			},
-			url:this.url_api,
-		});
-	}
+                sendform(btn, 'content_confirm_order', {
+                        data:{
+                                products: JSON.stringify(prod_objs)
+                        },
+                        arg_func_success: [prod_objs, this],
+                        func_success: function(res, arg) {
+                                for (let prod_id in arg[0]) { arg[1].cart.remove(prod_id); }
+                    mod_minishop_set_count_products();
+                        },
+                        wb_captcha_img: btn.parentElement.querySelector('img'),
+                        url:this.url_api,
+                });
+        }
     
 }
