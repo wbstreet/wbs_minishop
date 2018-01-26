@@ -82,7 +82,7 @@ else $order_by = 'prod_title';
 
 <div class="view_products"> <?php
 
-$sql = "SELECT * FROM `".TABLE_PREFIX."mod_minishop_products` WHERE ";
+$sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_products` WHERE ";
 $sql .= "`section_id`=$section_id AND ";
 //$sql .= '`page_id`='.$page_id.' AND ';
 $sql .= "`prod_is_active`='1' ORDER BY `prod_category_id`, `$order_by`";

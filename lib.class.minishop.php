@@ -11,13 +11,13 @@ class Minishop extends Addon {
 
     function __construct($page_id, $section_id) {
         parent::__construct('wbs_minishop', $page_id, $section_id);
-        $this->tbl_settings = "`".TABLE_PREFIX."mod_minishop_settings`";
-        $this->tbl_products = "`".TABLE_PREFIX."mod_minishop_products`";
-        $this->tbl_categories = "`".TABLE_PREFIX."mod_minishop_categories`";
-        $this->tbl_users = "`".TABLE_PREFIX."mod_minishop_users`";
-        $this->tbl_photos = "`".TABLE_PREFIX."mod_minishop_photos`";
-        $this->tbl_prop = "`".TABLE_PREFIX."mod_minishop_prop`";
-        $this->tbl_prop_values = "`".TABLE_PREFIX."mod_minishop_prop_values`";
+        $this->tbl_settings = "`".TABLE_PREFIX."mod_wbs_minishop_settings`";
+        $this->tbl_products = "`".TABLE_PREFIX."mod_wbs_minishop_products`";
+        $this->tbl_categories = "`".TABLE_PREFIX."mod_wbs_minishop_categories`";
+        $this->tbl_users = "`".TABLE_PREFIX."mod_wbs_minishop_users`";
+        $this->tbl_photos = "`".TABLE_PREFIX."mod_wbs_minishop_photos`";
+        $this->tbl_prop = "`".TABLE_PREFIX."mod_wbs_minishop_prop`";
+        $this->tbl_prop_values = "`".TABLE_PREFIX."mod_wbs_minishop_prop_values`";
         
         $this->process_error = 'echo';
     }
@@ -323,7 +323,7 @@ for (photo of photos) {
 
     	$props = [];
 	    if (count($prop_value_ids) > 0) {
-	        $sql = "SELECT * FROM `".TABLE_PREFIX."mod_minishop_prop_values`, `".TABLE_PREFIX."mod_minishop_prop` WHERE `".TABLE_PREFIX."mod_minishop_prop_values`.`prop_id` = `".TABLE_PREFIX."mod_minishop_prop`.`prop_id` AND `prop_value_id` IN (".implode(',', $prop_value_ids).") ORDER BY `".TABLE_PREFIX."mod_minishop_prop_values`.`prop_id`";
+	        $sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_prop_values`, `".TABLE_PREFIX."mod_wbs_minishop_prop` WHERE `".TABLE_PREFIX."mod_minishop_prop_values`.`prop_id` = `".TABLE_PREFIX."mod_minishop_prop`.`prop_id` AND `prop_value_id` IN (".implode(',', $prop_value_ids).") ORDER BY `".TABLE_PREFIX."mod_minishop_prop_values`.`prop_id`";
 	        $r = $database->query($sql);
 	        if ($database->is_error()) {
 	            echo $database->get_error();
