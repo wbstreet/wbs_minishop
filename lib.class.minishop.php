@@ -205,7 +205,7 @@ for (photo of photos) {
         $has_self_delivery = "0";
         $has_delivery = "0";
         //	add a new row to the module table which contains the actual page_id and section_id 
-        $r = $database->query("INSERT INTO {$this->tbl_settings} (`page_id`, `section_id`, `admin_email`, `admin_login`, `block_html`, `block_css`, `address_self_delivery`, `has_self_delivery`, `has_delivery`, `window_html`, `window_css`) VALUES ('{$this->page_id}', '{$this->section_id}', \"mail@example.com\", \"".$admin_login."\", \"".mysql_escape_string($block_html)."\", \"".mysql_escape_string($block_css)."\", \"".$address_self_delivery."\", \"".$has_self_delivery."\", \"".$has_delivery."\", \"".mysql_escape_string($window_html)."\", \"".mysql_escape_string($window_css)."\")");
+        $r = $database->query("INSERT INTO {$this->tbl_settings} (`page_id`, `section_id`, `admin_email`, `admin_login`, `block_html`, `block_css`, `address_self_delivery`, `has_self_delivery`, `has_delivery`, `window_html`, `window_css`) VALUES ('{$this->page_id}', '{$this->section_id}', \"mail@example.com\", \"".$admin_login."\", \"".$database->escapeString($block_html)."\", \"".$database->escapeString($block_css)."\", \"".$address_self_delivery."\", \"".$has_self_delivery."\", \"".$has_delivery."\", \"".$database->escapeString($window_html)."\", \"".$database->escapeString($window_css)."\")");
         if (!$r) $admin->print_error($database->get_error());
     }
     
