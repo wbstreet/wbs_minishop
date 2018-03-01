@@ -20,6 +20,7 @@ class ModMinishop extends Addon {
         $this->tbl_prop_values = "`".TABLE_PREFIX."mod_wbs_minishop_prop_values`";
         
         $this->process_error = 'echo';
+        $this->clsStorageImg = new WbsStorageImg();
     }
     
     function install() {
@@ -82,7 +83,7 @@ class ModMinishop extends Addon {
             <div class='photos' style='display:inline-block;width: 100%;overflow-x: auto;'>
                 <nobr>
                 {% for photo in PROD_PHOTOS %}
-                      <img src='{{ photo.photo_url }}' style='height:40px;width:auto;cursor:pointer;'>
+                      <img src='{{ photo.preview_image }}' style='height:40px;width:auto;cursor:pointer;'>
                 {% endfor %}
                 </nobr>
             </div>
@@ -261,19 +262,24 @@ for (photo of photos) {
 	        }
 	    }
 
-        // фотографии
+       // фотографии
 	    
-        $r = $database->query("SELECT * FROM {$this->tbl_photos} WHERE `prod_id`='{$arrProduct['prod_id']}' ORDER BY photo_is_main DESC");
-        if ($database->is_error()) print_error($database->get_error());
-    
-        $photos;
-        while ($row = $r->fetchRow(MYSQLI_ASSOC)) {
-            $row['photo_url'] = $this->urlMedia.$arrProduct['prod_id'].'/'.$row['photo_name'];
-            $photos[] = $row;
-        }
-    	
-    	$photo_main = count($photos) == 0 ? $this->urlMedia.'product_default_image.jpg' : $photos[0]['photo_url'];
-    	
+       $r = select_row(
+           [$this->tbl_photos, $this->clsStorageImg->tbl_img],
+           "*",
+           "{$this->tbl_photos}.`storage_image_id` = {$this->clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$arrProduct['prod_id']}' ORDER BY photo_is_main, photo_id DESC"
+           );
+       if (gettype($r) === 'string') return $r;
+
+       $photos;
+       while ($row = $r->fetchRow()) {
+           $row['orig_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], 'origin');
+           $row['preview_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], '350x250');
+           $photos[] = $row;
+       }
+        
+       $photo_main = count($photos) == 0 ? $this->urlMedia.'product_default_image.jpg' : $photos[0]['preview_image'];
+        
     	return [
             "PROD_ID"             =>  $arrProduct['prod_id'],
             "PROD_COUNT2CART"     =>  0,
@@ -290,11 +296,6 @@ for (photo of photos) {
             ];
     }
     
-    function photo_generate_name($original_image_name) {
-        $aName = pathinfo($original_image_name);
-        return generate_image_name($len=15, $registr='both').".".$aName['extension'];
-    }
-
     function wrap_product_tile($html, $arrProduct) {
         return "<div class='product' id='product{$arrProduct['prod_id']}' data-prod_id='{$arrProduct['prod_id']}' data-section_id='{$this->section_id}' data-page_id='{$this->page_id}'>".$html."</div>";
     }

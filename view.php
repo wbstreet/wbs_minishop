@@ -88,7 +88,6 @@ $sql .= "`section_id`=$section_id AND ";
 $sql .= "`prod_is_active`='1' ORDER BY `prod_category_id`, `$order_by`";
 $products = $database->query($sql);
 $current_category_id = '';
-$section_path = WB_URL.'/media/mod_minishop/';
 while($product = $products->fetchRow()) {
 
     $category_id = $product['prod_category_id'];

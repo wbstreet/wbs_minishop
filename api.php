@@ -3,18 +3,6 @@ function get_number($string){
     return preg_replace("/[^0-9]+/", '', $string);
 }
 
-function convertImage($image_name, $w, $h) {
-    $image = new Imagick($image_name);
-    $width = $image->getImageWidth();
-    $height = $image->getImageHeight();
-    // масштабируем картинку
-    if ($width / $height >= $w/$h) { $image->thumbnailImage(0, $h);}
-    else {$image->thumbnailImage($w, 0);}
-    // обрезаем картинку
-    $image->cropImage($w, $h, 0, 0);
-    $image->writeImage($image_name);
-}
-
 // settings
 $product_image_width = 500;
 $product_image_height = 550;
@@ -381,25 +369,28 @@ if ($action == 'content_confirm_order') {
 
     require(WB_PATH.'/modules/admin.php');
 
-	$product_id = $clsFilter->f('prod_id', [['integer']], 'fatal');
+    $product_id = $clsFilter->f('prod_id', [['integer']], 'fatal');
 
-    $photos = [];
+    $r = select_row(
+        [$clsMinishop->tbl_photos, $clsStorageImg->tbl_img],
+        "*",
+        "{$clsMinishop->tbl_photos}.`storage_image_id` = {$clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$product_id}' ORDER BY photo_is_main, photo_id DESC"
+        );
+    if (gettype($r) === 'string') print_error($r);
 
-    $r = $database->query("SELECT * FROM {$clsMinishop->tbl_photos} WHERE `prod_id`='{$product_id}' ORDER BY photo_id DESC");
-    if ($database->is_error()) print_error($database->get_error());
-    
-    while ($row = $r->fetchRow(MYSQLI_ASSOC)) {
-        $row['photo_url'] = $clsMinishop->urlMedia.$product_id.'/'.$row['photo_name'];
+    $photos = [];    
+    while ($r !== null && $row = $r->fetchRow()) {
+        $row['photo_url'] = $clsStorageImg->get_without_db($row['md5'], $row['ext'], 'origin');
         $photos[] = $row;
     }
 
-	print_error($clsMinishop->render('product_photos_edit.twig', [
-		'FTAN'=>$admin->getFTAN(),
-		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
-		'section_id' => $section_id,
-		'page_id' => $page_id,
-		'prod_id' => $product_id,
-		'photos'=>$photos
+        print_error($clsMinishop->render('product_photos_edit.twig', [
+                'FTAN'=>$admin->getFTAN(),
+                'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
+                'section_id' => $section_id,
+                'page_id' => $page_id,
+                'prod_id' => $product_id,
+                'photos'=>$photos
     ], true),
     ['title'=>'Редактирование фотографий']
     );
@@ -408,57 +399,33 @@ if ($action == 'content_confirm_order') {
 
     require(WB_PATH.'/modules/admin.php');
 
-	$product_id = $clsFilter->f('prod_id', [['integer']], 'fatal');
-    
-    if (!isset($_FILES['photos'])) print_error("Не выбраны фотографии");
-    if (count($_FILES['photos']['size']) == 0) print_error("Не выбраны фотографии!");
+    $product_id = $clsFilter->f('prod_id', [['integer']], 'fatal');
 
-    $_FILES['photos'] = diverse_array($_FILES['photos']);
+    if (!isset($_FILES['photos']['tmp_name'])) print_error('Не выбраны фотографии');
+    if (!$_FILES['photos']['tmp_name']) print_error('Не выбраны фотографии');
 
-    $allowed_mime = ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png', 'image/svg+xml', 'image/webp'];
+    list($ids, $errors) = $clsStorageImg->save_many($_FILES['photos']['tmp_name']);
 
-    $pathProduct = $clsMinishop->pathMedia.'/'.$product_id.'/';
-    if (!file_exists($pathProduct)) mkdir($pathProduct);
+    $img_errs = '<br>';
+    if ($errors) {
+        $img_errs .= count($errors)." из ".count($_FILES['photos']['tmp_name'])." изображений не загружены! <br>";
+        foreach ($errors as $i => $error) $img_errs .= $error."<br>";
+    }
 
-    $_errors = [];
-
-    $x = 0;
-    $loaded_photos =  [];
-    foreach ($_FILES['photos'] as $i => $_file) {
-        if (count($errors) > 1) $_errors = array_merge($_errors, $errors);
-
-        $errors = ["&nbsp;&nbsp;&nbsp;&nbsp;".htmlspecialchars($_file['name'])];
+    $loaded_photos = [];
+    if ($ids) {
+        foreach($ids as $i => $image_id) {
+                $fields = ['`prod_id`'=>$product_id, '`storage_image_id`'=>$image_id, '`photo_position`'=>0, '`photo_is_main`'=>0];
+            $r = insert_row($clsMinishop->tbl_photos, $fields);
+                $loaded_photos[] = [
+                'photo_id'=>$database->getLastInsertId(),
+                'phot_url'=>$clsStorageImg->get($image_id),
+            ];
+        }
         
-        if ($_file['size'] < 1*1024) {$errors[] = 'Фотографияя меньше разрешённого размера'; continue;}
-        if (!in_array($_file['type'], $allowed_mime)) {$errors[] = 'Фотография запрещённого формата'; continue;}
-
-        $photo_name = $clsMinishop->photo_generate_name($_file['name']);
-
-        $r = $database->query("INSERT INTO {$clsMinishop->tbl_photos} (`prod_id`, `photo_name`, `photo_position`, `photo_is_main`) VALUES ('{$product_id}', '{$photo_name}', '0', '0')");
-
-        if (!$database->is_error()) {
-            $photo_id = $database->getLastInsertId();
-            if (move_uploaded_file($_file['tmp_name'], $pathProduct.$photo_name)) {
-               $loaded_photos[] = [
-                   'photo_id'=>$photo_id,
-                   'phot_url'=>$clsMinishop->urlMedia.$product_id.'/'.$photo_name,
-                ];
-            } else {
-                $errors[] = "не удалось загрузить фотографию";
-                $database->query("DELETE FROM {$clsMinishop->tbl_photos} WHERE `photo_id`='{$photo_id}'");                
-            };
-        } else {$errors[] = $database->get_error(); continue;}
-
-        $x += 1;
     }
-    
-    if (count($errors) > 1) $_errors = array_merge($_errors, $errors);
 
-    $answer = "Загружено $x фотографий.";
-    if (count($_errors) > 0) {
-        print_error($answer."<br>".implode("<br>", $_errors), ['data'=>['loaded_photos'=>$loaded_photos]]);
-    }
-    print_success($answer, ['timeout'=>10000, 'data'=>['loaded_photos'=>$loaded_photos]]);
+    print_success($img_errs, ['timeout'=>10000, 'data'=>['loaded_photos'=>$loaded_photos]]);
 
 } else if ($action == 'photo_delete') {
     
