@@ -377,39 +377,6 @@ for (photo of photos) {
         return generate_image_name($len=15, $registr='both').".".$aName['extension'];
     }
 
-    /*
-     * Данная функция должна работать без переменных section_id и page_id
-    */
-    function photo_old2new() {
-        global $database;
-        
-        $count = 0;
-
-        $_r = $database->query("SELECT * FROM {$this->tbl_products}");
-        if ($database->is_error()) {
-        } else {
-
-            while ($arrProduct = $_r->fetchRow(MYSQLI_ASSOC)) {
-
-                $image_old = $this->pathMedia.$arrProduct['prod_id']."/".$arrProduct['prod_image_name'];
-        
-                $pathProduct = $this->pathMedia.'/'.$arrProduct['prod_id'].'/';
-                if (!file_exists($pathProduct)) mkdir($pathProduct);
-        
-                if (file_exists($image_old)) {
-                    $photo_name = $this->photo_generate_name($image_old);
-
-                    $r = $database->query("INSERT INTO {$this->tbl_photos} (`prod_id`, `photo_name`, `photo_position`, `photo_is_main`) VALUES ('{$arrProduct['prod_id']}', '{$photo_name}', '0', '0')");
-                    if (!$database->is_error()) rename($image_old, $pathProduct.$photo_name);
-
-                    $count += 1;
-                }
-            }
-        }
-        
-        return $count;
-    }
-    
     function wrap_product_tile($html, $arrProduct) {
         return "<div class='product' id='product{$arrProduct['prod_id']}' data-prod_id='{$arrProduct['prod_id']}' data-section_id='{$this->section_id}' data-page_id='{$this->page_id}'>".$html."</div>";
     }
