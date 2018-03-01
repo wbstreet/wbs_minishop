@@ -186,4 +186,4 @@ while($product = $products->fetchRow()) {
 	<option value="">Экспорт</option>
 </select>-->
 
-<script src="/modules/wbs_minishop/backend_after.js" defer></script>
+<!-- <script src="/modules/wbs_minishop/backend_after.js" defer></script> -->

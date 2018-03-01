@@ -1,6 +1,6 @@
 <?php
 function get_number($string){
-    return preg_replace("/[^0-9]+/", '', mysql_escape_string($string));
+    return preg_replace("/[^0-9]+/", '', $string);
 }
 
 function convertImage($image_name, $w, $h) {
@@ -145,7 +145,7 @@ if ($action == 'content_confirm_order') {
     
     $res['e'] = $prop_id.'-'.$value;
     
-    $sql = "UPDATE `".TABLE_PREFIX."mod_minishop_prop` SET `prop_name`='$value' WHERE `prop_id`='$prop_id'";
+    $sql = "UPDATE `".TABLE_PREFIX."mod_wbs_minishop_prop` SET `prop_name`='$value' WHERE `prop_id`='$prop_id'";
     if ($database->query($sql)) $res['success'] = true;
     else { $res['success']= false; $res['message'] = $database->get_error();}
 
@@ -232,13 +232,13 @@ if ($action == 'content_confirm_order') {
 
     if ($category_id==0) {
         $fields = ['category_name'=>$category_name, 'section_id'=>$section_id, 'page_id'=>$page_id];
-        $sql = 'INSERT INTO `'.TABLE_PREFIX.'mod_minishop_categories` ('.glue_keys(array_keys($fields)).') VALUES ('.glue_values(array_values($fields)).')';
+        $sql = 'INSERT INTO `'.TABLE_PREFIX.'mod_wbs_minishop_categories` ('.glue_keys(array_keys($fields)).') VALUES ('.glue_values(array_values($fields)).')';
         if ($database->query($sql)) print_success("Категория создана!", ['data'=>['id'=>$database->getLastInsertId(), 'name'=>$category_name]]);
         else print_error($database->get_error());
     } else {
         $fields = ['category_name'=>$category_name];
         $forupdate = glue_fields($fields, ',');
-        $sql = 'UPDATE `'.TABLE_PREFIX.'mod_minishop_categories` SET '.$forupdate.'  WHERE `section_id`="'.mysql_escape_string($section_id).'" AND `category_id`="'.mysql_escape_string($category_id).'"';
+        $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_categories` SET '.$forupdate.'  WHERE `section_id`="'.mysql_escape_string($section_id).'" AND `category_id`="'.mysql_escape_string($category_id).'"';
         if ($database->query($sql)) print_success("Категория переименована!");
         else print_error($database->get_error());
     }
@@ -248,7 +248,7 @@ if ($action == 'content_confirm_order') {
     require(WB_PATH.'/modules/admin.php');
 
     $prop_name = $database->escapeString($_POST['prop_name']);
-    $sql = "INSERT INTO `".TABLE_PREFIX."mod_minishop_prop` (`prop_name`, `section_id`, `page_id`) VALUES ('$prop_name', '$section_id', '$page_id')";
+    $sql = "INSERT INTO `".TABLE_PREFIX."mod_wbs_minishop_prop` (`prop_name`, `section_id`, `page_id`) VALUES ('$prop_name', '$section_id', '$page_id')";
     if ($database->query($sql)) print_success("Создано! Переоткройте окно.");
     else print_error($database->get_error());
 
@@ -258,7 +258,7 @@ if ($action == 'content_confirm_order') {
 
     $prop_value = $database->escapeString($_POST['prop_value']);
     $prop_id = $database->escapeString($_POST['prop_id']);
-    $sql = "INSERT INTO `".TABLE_PREFIX."mod_minishop_prop_values` (`prop_id`, `value`, `section_id`, `page_id`) VALUES ('$prop_id', '$prop_value', '$section_id', '$page_id')";
+    $sql = "INSERT INTO `".TABLE_PREFIX."mod_wbs_minishop_prop_values` (`prop_id`, `value`, `section_id`, `page_id`) VALUES ('$prop_id', '$prop_value', '$section_id', '$page_id')";
     if ($database->query($sql)) print_success("Добавлено! Переоткройте окно.");
     else print_error($database->get_error());
 
@@ -292,7 +292,7 @@ if ($action == 'content_confirm_order') {
 
     if ($_POST['has_delivery']=='on') {$has_delivery = '1';} else {$has_delivery = '0';}
     if ($_POST['has_self_delivery']=='on') {$has_self_delivery = '1';} else {$has_self_delivery = '0';}
-    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_minishop_settings` SET ';
+    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
     $sql .= '`admin_email`="'          .mysql_escape_string($_POST['admin_email'])          .'", ';
     $sql .= '`admin_login`="'          .mysql_escape_string($_POST['admin_login'])          .'", ';
     $sql .= '`block_html`="'           .mysql_escape_string($_POST['block_html'])           .'", ';
@@ -307,7 +307,7 @@ if ($action == 'content_confirm_order') {
     if (!$database->query($sql)) $admin->print_error($database->get_error(), $clsMinishop->urlRet);
 
     if ($minishop_settings['is_general_settings'] != 0) {
-        $sql = 'UPDATE `'.TABLE_PREFIX.'mod_minishop_settings` SET ';
+        $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
         $sql .= '`is_general_settings`="'  .mysql_escape_string($_POST['is_general_settings'])  .'"  ';
         $sql .= ' WHERE `section_id`='.$section_id.' AND `page_id`='.$page_id;
         if (!$database->query($sql)) $admin->print_error($database->get_error(), $clsMinishop->urlRet);
@@ -337,7 +337,7 @@ if ($action == 'content_confirm_order') {
 
     $forupdate = glue_fields($fields, ',');
 
-    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.mysql_escape_string($section_id).'" AND `prod_id`="'.mysql_escape_string($prod_id).'"';
+    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.mysql_escape_string($section_id).'" AND `prod_id`="'.mysql_escape_string($prod_id).'"';
     if ($database->query($sql)) { print_success("Товар обновлён!"); }
     else print_error($database->get_error());
 
@@ -348,7 +348,7 @@ if ($action == 'content_confirm_order') {
 
 	$prod_id = $admin->get_post('prod_id');
 
-    $products = $database->query('SELECT * FROM `'.TABLE_PREFIX.'mod_minishop_products` WHERE `section_id`='.$section_id.' AND `prod_id`="'.$prod_id.'"');
+    $products = $database->query('SELECT * FROM `'.TABLE_PREFIX.'mod_wbs_minishop_products` WHERE `section_id`='.$section_id.' AND `prod_id`="'.$prod_id.'"');
     $product = $products->fetchRow();
 
     $product['prod_price'] = $product['prod_price'] / 100;
