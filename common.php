@@ -10,7 +10,7 @@
  *
  */
 
-$categories = $database->query("SELECT * FROM `".TABLE_PREFIX."mod_minishop_categories` WHERE `section_id` = '$section_id'");
+$categories = $database->query("SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_categories` WHERE `section_id` = '$section_id'");
 $category_array = [];
 while ($category = $categories->fetchRow()) {
     $category_array[$category['category_id']] = $category['category_name'];

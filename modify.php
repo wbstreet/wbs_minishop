@@ -160,7 +160,7 @@ if(function_exists('wbs_core_include')) wbs_core_include(['functions.js', 'windo
 
 <div class="modify_products">
 <?php
-$products = $database->query('SELECT * FROM `'.TABLE_PREFIX.'mod_minishop_products` WHERE `section_id`='.$section_id.' ORDER BY `prod_category_id`');
+$products = $database->query('SELECT * FROM `'.TABLE_PREFIX.'mod_wbs_minishop_products` WHERE `section_id`='.$section_id.' ORDER BY `prod_category_id`');
 $current_category_id = '';
 while($product = $products->fetchRow()) {
     if ($product['prod_category_id'] != $current_category_id) {
