@@ -16,7 +16,7 @@ if(!defined('WB_PATH')) die(header('Location: index.php'));
 
 $_section_id = mysql_escape_string($section_id);
 
-$sql = "SELECT * FROM `" .TABLE_PREFIX ."mod_minishop_products` WHERE `section_id` = '".$_section_id."'";
+$sql = "SELECT * FROM `" .TABLE_PREFIX ."mod_wbs_minishop_products` WHERE `section_id` = '".$_section_id."'";
 if ($database->query($sql)->numRows() > 0 ) {
     $admin->print_header();
     $admin->print_error('Секция не удалена: в магазине есть товары!', ADMIN_URL.'/pages/sections.php?page_id='.$page_id);
@@ -24,8 +24,8 @@ if ($database->query($sql)->numRows() > 0 ) {
 }
 
 //	delete the row of the module table which contains the actual page
-$database->query("DELETE FROM `" .TABLE_PREFIX ."mod_minishop_settings` WHERE `section_id` = '$_section_id'");
-$database->query("DELETE FROM `" .TABLE_PREFIX ."mod_minishop_users` WHERE `section_id` = '$_section_id'");
-$database->query("DELETE FROM `" .TABLE_PREFIX ."mod_minishop_categories` WHERE `section_id` = '$_section_id'");
+$database->query("DELETE FROM `" .TABLE_PREFIX ."mod_wbs_minishop_settings` WHERE `section_id` = '$_section_id'");
+$database->query("DELETE FROM `" .TABLE_PREFIX ."mod_wbs_minishop_users` WHERE `section_id` = '$_section_id'");
+$database->query("DELETE FROM `" .TABLE_PREFIX ."mod_wbs_minishop_categories` WHERE `section_id` = '$_section_id'");
 
 ?>

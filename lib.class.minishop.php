@@ -24,7 +24,21 @@ class ModMinishop extends Addon {
     
     function install() {
     }
-    
+
+    function uninstall() {
+        // delete all database search table entries made by this module
+        $database->query("DELETE FROM `" .TABLE_PREFIX ."search` WHERE `name` = 'module' AND `value` = 'minishop'");
+        $database->query("DELETE FROM `" .TABLE_PREFIX ."search` WHERE `extra` = 'minishop'");
+
+        $database->query("DROP TABLE ".$this->tbl_settings);
+        $database->query("DROP TABLE ".$this->tbl_products);
+        $database->query("DROP TABLE ".$this->tbl_categories);
+        $database->query("DROP TABLE ".$this->tbl_users);
+        $database->query("DROP TABLE ".$this->tbl_photos);
+        $database->query("DROP TABLE ".$this->tbl_prop);
+        $database->query("DROP TABLE ".$this->tbl_prop_values);
+    }
+
     function add() {
         global $admin, $database;
         
