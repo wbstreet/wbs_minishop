@@ -95,7 +95,7 @@ if ($action == 'content_confirm_order') {
     	'comment'=>$comment,
     	'delivery'=>$delivery,
     	'delivery_address'=>$delivery_address,
-    ]);
+    ], true);
 
     $r = $clsEmail->send(
 
@@ -202,7 +202,7 @@ if ($action == 'content_confirm_order') {
 		'FTAN'=>$admin->getFTAN(),
 		'props'=> $props,
 		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
-      ]),
+      ], true),
    	  ['title'=>'Управление характеристиками товаров']
    );	
 
@@ -219,7 +219,7 @@ if ($action == 'content_confirm_order') {
 		'section_id'=>$section_id,
 		'page_id'=>$page_id,
 		'categories' => $category_array,
-      ]),
+      ], true),
    	  ['title'=>'Управление категориями']
    );	
 
@@ -275,7 +275,7 @@ if ($action == 'content_confirm_order') {
 		'section_id'=>$section_id,
 		'page_id'=>$page_id,
 		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
-      ]),
+      ], true),
    	  ['title'=>'Настройки магазина']
    );
 
@@ -375,7 +375,7 @@ if ($action == 'content_confirm_order') {
 		'section_id' => $section_id,
 		'props' => $props,
 		'categories' => $category_array,
-    ]));
+    ], true));
 
 } else if ($action == 'window_product_photos_edit') {
 
@@ -400,7 +400,7 @@ if ($action == 'content_confirm_order') {
 		'page_id' => $page_id,
 		'prod_id' => $product_id,
 		'photos'=>$photos
-    ]),
+    ], true),
     ['title'=>'Редактирование фотографий']
     );
 
