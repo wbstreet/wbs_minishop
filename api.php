@@ -141,7 +141,7 @@ if ($action == 'content_confirm_order') {
     require(WB_PATH.'/modules/admin.php');
 
     $prop_id = preg_replace('/[^0-9]/', '', $_POST['prop_id']);
-    $value = mysql_escape_string($_POST['value']);
+    $value = $database->escapeString($_POST['value']);
     
     $res['e'] = $prop_id.'-'.$value;
     
@@ -238,7 +238,7 @@ if ($action == 'content_confirm_order') {
     } else {
         $fields = ['category_name'=>$category_name];
         $forupdate = glue_fields($fields, ',');
-        $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_categories` SET '.$forupdate.'  WHERE `section_id`="'.mysql_escape_string($section_id).'" AND `category_id`="'.mysql_escape_string($category_id).'"';
+        $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_categories` SET '.$forupdate.'  WHERE `section_id`="'.$database->escapeString($section_id).'" AND `category_id`="'.$database->escapeString($category_id).'"';
         if ($database->query($sql)) print_success("Категория переименована!");
         else print_error($database->get_error());
     }
@@ -293,22 +293,22 @@ if ($action == 'content_confirm_order') {
     if ($_POST['has_delivery']=='on') {$has_delivery = '1';} else {$has_delivery = '0';}
     if ($_POST['has_self_delivery']=='on') {$has_self_delivery = '1';} else {$has_self_delivery = '0';}
     $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
-    $sql .= '`admin_email`="'          .mysql_escape_string($_POST['admin_email'])          .'", ';
-    $sql .= '`admin_login`="'          .mysql_escape_string($_POST['admin_login'])          .'", ';
-    $sql .= '`block_html`="'           .mysql_escape_string($_POST['block_html'])           .'", ';
-    $sql .= '`block_css`="'            .mysql_escape_string($_POST['block_css'])            .'", ';
-    $sql .= '`address_self_delivery`="'.mysql_escape_string($_POST['address_self_delivery']).'", ';
-    $sql .= '`has_self_delivery`="'    .mysql_escape_string($has_self_delivery)             .'", ';
-    $sql .= '`has_delivery`="'         .mysql_escape_string($has_delivery)                  .'", ';
-    $sql .= '`window_html`="'          .mysql_escape_string($_POST['window_html'])          .'", ';
-    if ($minishop_settings['is_general_settings'] == 0) { $sql .= '`is_general_settings`="'  .mysql_escape_string($_POST['is_general_settings'])  .'",  '; }
-    $sql .= '`window_css`="'           .mysql_escape_string($_POST['window_css'])           .'" ';
+    $sql .= '`admin_email`="'          .$database->escapeString($_POST['admin_email'])          .'", ';
+    $sql .= '`admin_login`="'          .$database->escapeString($_POST['admin_login'])          .'", ';
+    $sql .= '`block_html`="'           .$database->escapeString($_POST['block_html'])           .'", ';
+    $sql .= '`block_css`="'            .$database->escapeString($_POST['block_css'])            .'", ';
+    $sql .= '`address_self_delivery`="'.$database->escapeString($_POST['address_self_delivery']).'", ';
+    $sql .= '`has_self_delivery`="'    .$database->escapeString($has_self_delivery)             .'", ';
+    $sql .= '`has_delivery`="'         .$database->escapeString($has_delivery)                  .'", ';
+    $sql .= '`window_html`="'          .$database->escapeString($_POST['window_html'])          .'", ';
+    if ($minishop_settings['is_general_settings'] == 0) { $sql .= '`is_general_settings`="'  .$database->escapeString($_POST['is_general_settings'])  .'",  '; }
+    $sql .= '`window_css`="'           .$database->escapeString($_POST['window_css'])           .'" ';
     $sql .= ' WHERE `section_id`='.$_section_id.' AND `page_id`='.$_page_id;
     if (!$database->query($sql)) $admin->print_error($database->get_error(), $clsMinishop->urlRet);
 
     if ($minishop_settings['is_general_settings'] != 0) {
         $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
-        $sql .= '`is_general_settings`="'  .mysql_escape_string($_POST['is_general_settings'])  .'"  ';
+        $sql .= '`is_general_settings`="'  .$database->escapeString($_POST['is_general_settings'])  .'"  ';
         $sql .= ' WHERE `section_id`='.$section_id.' AND `page_id`='.$page_id;
         if (!$database->query($sql)) $admin->print_error($database->get_error(), $clsMinishop->urlRet);
     }
@@ -337,7 +337,7 @@ if ($action == 'content_confirm_order') {
 
     $forupdate = glue_fields($fields, ',');
 
-    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.mysql_escape_string($section_id).'" AND `prod_id`="'.mysql_escape_string($prod_id).'"';
+    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.$database->escapeString($section_id).'" AND `prod_id`="'.$database->escapeString($prod_id).'"';
     if ($database->query($sql)) { print_success("Товар обновлён!"); }
     else print_error($database->get_error());
 
