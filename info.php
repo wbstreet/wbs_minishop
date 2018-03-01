@@ -18,7 +18,7 @@ if(!defined('WB_PATH')) {
 $module_directory = 'wbs_minishop';
 $module_name = 'WBS Minishop v 2.0';
 $module_function = 'page';
-$module_version = '2.0';
+$module_version = '3.0';
 $module_platform = '2.8.3';
 $module_author = 'Konstantin Polyakov';
 $module_license = 'GNU General Public License';
