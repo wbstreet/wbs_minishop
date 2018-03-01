@@ -5,7 +5,7 @@ if (file_exists($path_core )) include($path_core );
 else echo "<script>console.log('Модуль минимаркета требует модуль wbs_core')</script>";
 //if (!defined('FUNCTIONS_FILE_LOADED')) require_once(WB_PATH.'/framework/functions.php');
 
-class Minishop extends Addon {
+class ModMinishop extends Addon {
     public $is_common_cart = true;
     public $is_common_props = true;
 
@@ -23,102 +23,6 @@ class Minishop extends Addon {
     }
     
     function install() {
-        global $database;
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_settings}");
-        $mod_create_table = 'CREATE TABLE '.$this->tbl_settings.' ( '
-        	. '`section_id` INT NOT NULL,'
-        	. '`page_id` INT NOT NULL,'
-        	. '`admin_email` VARCHAR(255) NOT NULL,'
-        	. '`admin_login` VARCHAR(255) NOT NULL,'
-        	. '`block_html` TEXT,'
-        	. '`block_css` TEXT,'
-        	. '`address_self_delivery` TEXT,'
-        	. '`has_self_delivery` INT,'
-        	. '`has_delivery` INT,'
-        	. '`window_html` TEXT,'
-        	. '`window_css` TEXT,'
-        	. '`is_general_settings` INT NOT NULL DEFAULT \'0\''
-        	. ' )';
-        $database->query($mod_create_table);
-        
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_products}");
-        $mod_create_table = 'CREATE TABLE '.$this->tbl_products.' ( '
-        	. '`section_id` INT NOT NULL DEFAULT \'0\','
-        	. '`prod_id` INT NOT NULL AUTO_INCREMENT,'
-        	. '`prod_category_id` INT,'
-        	. '`page_id` INT NOT NULL DEFAULT \'0\','
-        	. '`prod_title` VARCHAR(255) NOT NULL,'
-        	. '`prod_shortdesc` VARCHAR(255),'
-        	. '`prod_desc` TEXT(500),'
-        	. '`prod_price` INT NOT NULL,'
-        	. '`prod_is_active` INT NOT NULL DEFAULT \'0\','
-        	. '`prod_count` INT NOT NULL DEFAULT \'0\','
-        	. '`prod_image_name` VARCHAR(255) NOT NULL,'
-        	. '`prop_value_ids` JSON,'
-                . '`prod_is_hit` INT,'
-        	. 'PRIMARY KEY (prod_id)'
-        	. ' )';
-        $database->query($mod_create_table);
-        
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_photos}");
-        $mod_create_table = "CREATE TABLE {$this->tbl_photos} (
-          `photo_id` int(11) NOT NULL AUTO_INCREMENT,
-          `prod_id` int(11) NOT NULL,
-          `photo_name` varchar(255) NOT NULL,
-          `photo_position` int(11) NOT NULL DEFAULT '0',
-          `photo_is_main` int(11) NOT NULL,
-           PRIMARY KEY (`photo_id`)
-        )";
-        $database->query($mod_create_table);
-        
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_categories}");
-        $mod_create_table = 'CREATE TABLE '.$this->tbl_categories.' ( '
-        	. '`section_id` INT NOT NULL DEFAULT \'0\','
-        	. '`category_id` INT NOT NULL AUTO_INCREMENT,'
-        	. '`page_id` INT NOT NULL DEFAULT \'0\','
-        	. '`category_name` VARCHAR(255) NOT NULL,'
-        	. 'PRIMARY KEY (category_id)'
-        	. ' )';
-        $database->query($mod_create_table);
-        
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_users}");
-        $mod_create_table = 'CREATE TABLE '.$this->tbl_users.' ( '
-        	. '`section_id` INT NOT NULL DEFAULT \'0\','
-        	. '`user_id` INT NOT NULL AUTO_INCREMENT,'
-        	. '`user_id_in_engine` INT NOT NULL DEFAULT \'0\' ,'
-        	. '`page_id` INT NOT NULL DEFAULT \'0\','
-        	. '`user_name` VARCHAR(255) NOT NULL,'
-        	. '`user_address` VARCHAR(255) NOT NULL,'
-        	. '`user_phone` VARCHAR(255) NOT NULL,'
-        	. 'PRIMARY KEY (user_id)'
-        	. ' )';
-        $database->query($mod_create_table);
-
-
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_prop};");
-        $mod_create_table = "CREATE TABLE {$this->tbl_prop} (
-		  `prop_id` int(11) NOT NULL AUTO_INCREMENT,
-		  `page_id` int(11) NOT NULL,
-		  `section_id` int(11) NOT NULL,
-		  `prop_name` varchar(255) NOT NULL,
-		  `prop_type` varchar(10) NOT NULL,
-		  PRIMARY KEY (prop_id)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-		";
-        $database->query($mod_create_table);
-
-        $database->query("DROP TABLE IF EXISTS {$this->tbl_prop_values};");
-        $mod_create_table = "CREATE TABLE {$this->tbl_prop_values} (
-		  `prop_value_id` int(11) NOT NULL AUTO_INCREMENT,
-		  `page_id` int(11) NOT NULL,
-		  `section_id` int(11) NOT NULL,
-		  `prop_id` int(11) NOT NULL,
-		  `value` varchar(255) NOT NULL,
-		  PRIMARY KEY (prop_value_id)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-		";
-        $database->query($mod_create_table);
-
     }
     
     function add() {

@@ -13,7 +13,7 @@
 if(!defined('WB_PATH')) die(header('Location: index.php'));  
 
 include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
-$clsMinishop = new Minishop($page_id, $section_id);
+$clsMinishop = new ModMinishop($page_id, $section_id);
 
 $clsMinishop->add();
 

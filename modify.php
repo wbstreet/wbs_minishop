@@ -25,7 +25,7 @@ if(!file_exists(WB_PATH .'/modules/wbs_minishop/languages/' .LANGUAGE .'.php')) 
 }
 
 include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
-$clsMinishop = new Minishop($page_id, $section_id);
+$clsMinishop = new ModMinishop($page_id, $section_id);
 
 $mod_path = MEDIA_DIRECTORY."/mod_minishop";
 $section_path = $clsMinishop->pathMedia;

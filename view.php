@@ -30,7 +30,7 @@ if(!file_exists(WB_PATH .'/modules/wbs_minishop/languages/' .LANGUAGE .'.php')) 
 		require_once(WB_PATH .'/modules/wbs_minishop/languages/' .LANGUAGE .'.php');
 }
 
-if (!class_exists("Minishop")) include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
+if (!class_exists("ModMinishop")) include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
 include('common.php');
 
 $clsMinishop = new Minishop($page_id, $section_id);

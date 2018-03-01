@@ -26,7 +26,7 @@ if (!$admin->checkFTAN()) {
 $admin->print_header();
 
 include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
-$clsMinishop = new Minishop($page_id, $section_id);
+$clsMinishop = new ModMinishop($page_id, $section_id);
 //$admin->print_error(json_encode($_POST['prop_value']), $clsMinishop->urlRet);
 
 if ($action=='create_product') {

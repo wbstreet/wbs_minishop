@@ -37,7 +37,7 @@ $update_when_modified = false;
 //require_once(WB_PATH.'/framework/wb.php');
 
 include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
-$clsMinishop = new Minishop($page_id, $section_id);
+$clsMinishop = new ModMinishop($page_id, $section_id);
 
 if (startsWith($action, 'window') || startsWith($action, 'content')) {
     $loader = new Twig_Loader_Filesystem($clsMinishop->pathTemplates);
