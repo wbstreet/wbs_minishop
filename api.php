@@ -39,11 +39,6 @@ $update_when_modified = false;
 include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
 $clsMinishop = new ModMinishop($page_id, $section_id);
 
-if (startsWith($action, 'window') || startsWith($action, 'content')) {
-    $loader = new Twig_Loader_Filesystem($clsMinishop->pathTemplates);
-    $twig = new Twig_Environment($loader);
-}
-
 if ($action == 'content_confirm_order') {
 
 	$fio = $clsFilter->f('fio', [['1', "Вы не указали Ваше имя!"]], 'append', '');
@@ -93,7 +88,7 @@ if ($action == 'content_confirm_order') {
 
     $minishop_settings = $clsMinishop->get_settings();
 
-    $body = $twig->render('letter_order.twig', [
+    $body = $clsMinishop->render('letter_order.twig', [
     	'fio'=>$fio,
     	'phone'=>$phone,
     	'prods'=>$prods,
@@ -203,7 +198,7 @@ if ($action == 'content_confirm_order') {
     }
 	
     print_success(
-   	  $twig->render('properties_edit.twig', [
+   	  $clsMinishop->render('properties_edit.twig', [
 		'FTAN'=>$admin->getFTAN(),
 		'props'=> $props,
 		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
@@ -218,7 +213,7 @@ if ($action == 'content_confirm_order') {
    include('common.php');
 
     print_success(
-   	  $twig->render('category_edit.twig', [
+   	  $clsMinishop->render('category_edit.twig', [
 		'FTAN'=>$admin->getFTAN(),
 		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
 		'section_id'=>$section_id,
@@ -274,7 +269,7 @@ if ($action == 'content_confirm_order') {
     $minishop_settings = $clsMinishop->get_settings();
 
     print_success(
-   	  $twig->render('settings_edit.twig', [
+   	  $clsMinishop->render('settings_edit.twig', [
 		'FTAN'=>$admin->getFTAN(),
 		'settings'=>$minishop_settings,
 		'section_id'=>$section_id,
@@ -372,7 +367,7 @@ if ($action == 'content_confirm_order') {
     	$props[] = $prop;
     }
 
-	print_success($twig->render('product_edit.twig', [
+	print_success($clsMinishop->render('product_edit.twig', [
 		'FTAN'=>$admin->getFTAN(),
 		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
 		'product' => $product,
@@ -398,7 +393,7 @@ if ($action == 'content_confirm_order') {
         $photos[] = $row;
     }
 
-	print_error($twig->render('product_photos_edit.twig', [
+	print_error($clsMinishop->render('product_photos_edit.twig', [
 		'FTAN'=>$admin->getFTAN(),
 		'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
 		'section_id' => $section_id,

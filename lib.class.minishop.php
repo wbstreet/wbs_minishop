@@ -299,21 +299,12 @@ for (photo of photos) {
         return "<div class='product' id='product{$arrProduct['prod_id']}' data-prod_id='{$arrProduct['prod_id']}' data-section_id='{$this->section_id}' data-page_id='{$this->page_id}'>".$html."</div>";
     }
     
-    function print_template($name, $vars) {
-	    $loader = new Twig_Loader_Filesystem($this->pathTemplates);
-	    $twig = new Twig_Environment($loader);    	
-	    
-	    $vars["WB_URL"] = WB_URL;
-
-   	    echo $twig->render($name, $vars);
-    }
-
     function print_cart_btn() {
-        $this->print_template("frontend_cart_btn.twig", []);
+        $this->render("frontend_cart_btn.twig", []);
     }
     
     function print_cart() {
-        $this->print_template("frontend_cart.twig", []);
+        $this->render("frontend_cart.twig", []);
     }
     
     function is_hit($prod_id) {
