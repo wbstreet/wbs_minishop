@@ -35,6 +35,7 @@ CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_products` (
 DROP TABLE IF EXISTS `{TABLE_PREFIX}mod_wbs_minishop_photos`;
 CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_photos` (
     `photo_id` INT(11) NOT NULL AUTO_INCREMENT,
+    `storage_image_id` INT(11) NOT NULL,
     `prod_id` INT(11) NOT NULL,
     `photo_name` varchar(255) NOT NULL,
     `photo_position` INT(11) NOT NULL DEFAULT '0',

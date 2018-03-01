@@ -44,7 +44,7 @@ if ($action=='create_product') {
         'prod_image_name' => 'default'
     ];
 
-    $sql = 'INSERT INTO `'.TABLE_PREFIX.'mod_minishop_products` ('.glue_keys(array_keys($fields)).') VALUES ('.glue_values(array_values($fields)).') ';
+    $sql = 'INSERT INTO `'.TABLE_PREFIX.'mod_wbs_minishop_products` ('.glue_keys(array_keys($fields)).') VALUES ('.glue_values(array_values($fields)).') ';
     //echo $sql;
     if ($database->query($sql)) $admin->print_success("Товар создан!", $clsMinishop->urlRet);
     else $admin->print_error($database->get_error(), $clsMinishop->urlRet);
