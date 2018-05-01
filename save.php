@@ -54,8 +54,8 @@ if ($action=='create_product') {
     if ($image['size'] != 0 and $image['tmp_name'] != '') {
         $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
         if ($ext != 'jpg') $admin->print_error("Неразрешённое расширение файла! Только .jpg !", $clsMinishop->urlRet);
-        $new_name = WB_PATH.'/media/mod_minishop/product_default_image.jpg';
-        move_uploaded_file($image['tmp_name'], $new_name);
+        $new_name = WB_PATH.'/media/mod_'.$clsMinishop->name.'/product_default_image.jpg';
+        if (!move_uploaded_file($image['tmp_name'], $new_name)) {$admin->print_error("Ошибки загрузки!", $clsMinishop->urlRet);}
         if ($is_use_product_image_height) convertImage($new_name, $product_image_width, $product_image_height);
     } else {$admin->print_error("Пустой файл или имя!", $clsMinishop->urlRet);}
     $admin->print_success("Картинка загружена!", $clsMinishop->urlRet);

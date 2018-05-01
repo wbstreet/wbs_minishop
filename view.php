@@ -73,10 +73,10 @@ else $order_by = 'prod_title';
 <?php $clsMinishop->print_cart(); ?>
 
 <div style='float:right;'>
-    Сортировать по
+    <?php echo $TEXT['SORTED_BY']; ?>
     <select onchange='window.location.search = "?sorted_by=" + this.value;'>
-        <option value="name"  <?php if($order_by=='prod_name') echo 'selected'; ?>>Алфавиту</option>
-        <option value="price" <?php if($order_by=='prod_price') echo 'selected'; ?>>Цене</option>
+        <option value="name"  <?php if($order_by=='prod_name') echo 'selected'; ?>><?php echo $TEXT['SORTED_BY_TITLE']; ?></option>
+        <option value="price" <?php if($order_by=='prod_price') echo 'selected'; ?>><?php echo $TEXT['SORTED_BY_PRICE']; ?></option>
     </select>
 </div><br>
 

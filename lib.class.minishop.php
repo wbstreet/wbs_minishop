@@ -271,8 +271,8 @@ for (photo of photos) {
            );
        if (gettype($r) === 'string') return $r;
 
-       $photos;
-       while ($row = $r->fetchRow()) {
+       $photos = [];
+       while ($r !== null && $row = $r->fetchRow()) {
            $row['orig_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], 'origin');
            $row['preview_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], '350x250');
            $photos[] = $row;
