@@ -11,6 +11,7 @@ CREATE TABLE  `{TABLE_PREFIX}mod_wbs_minishop_settings` (
     `has_delivery` INT(11),
     `window_html` TEXT,
     `window_css` TEXT,
+    `need_registration` INT NOT NULL DEFAULT 0,
     `is_general_settings` INT(11) NOT NULL DEFAULT '0'
 ){TABLE_ENGINE=MyISAM};
         

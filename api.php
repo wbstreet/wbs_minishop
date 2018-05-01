@@ -289,6 +289,7 @@ if ($action == 'content_confirm_order') {
     $sql .= '`has_self_delivery`="'    .$database->escapeString($has_self_delivery)             .'", ';
     $sql .= '`has_delivery`="'         .$database->escapeString($has_delivery)                  .'", ';
     $sql .= '`window_html`="'          .$database->escapeString($_POST['window_html'])          .'", ';
+    $sql .= '`need_registration`="'          .$database->escapeString($_POST['need_registration'])  .'", ';
     if ($minishop_settings['is_general_settings'] == 0) { $sql .= '`is_general_settings`="'  .$database->escapeString($_POST['is_general_settings'])  .'",  '; }
     $sql .= '`window_css`="'           .$database->escapeString($_POST['window_css'])           .'" ';
     $sql .= ' WHERE `section_id`='.$_section_id.' AND `page_id`='.$_page_id;
