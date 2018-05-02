@@ -40,8 +40,7 @@ if ($action=='create_product') {
         'prod_desc' => $admin->get_post('prod_desc'),
         'prod_price' => $admin->get_post('prod_price') * 100,
         'prod_is_active' => 1,
-        'prod_count' => 10,
-        'prod_image_name' => 'default'
+        'prod_count' => 10
     ];
 
     $sql = 'INSERT INTO `'.TABLE_PREFIX.'mod_wbs_minishop_products` ('.glue_keys(array_keys($fields)).') VALUES ('.glue_values(array_values($fields)).') ';

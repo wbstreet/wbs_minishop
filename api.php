@@ -124,6 +124,51 @@ if ($action == 'content_confirm_order') {
 
     print_success("Успешно", ['data'=>$products]);
 
+} else if ($action == 'get_cart_list') {
+
+    $opts = ['title'=>'Корзина'];
+
+	$cart_prods = json_decode($clsFilter->f('products', [['1', "Не указаны товары!"]], 'fatal'), true);
+
+    // проверяем корзину
+
+    $prod_ids = [];
+    foreach ($cart_prods as $i => $data) {
+    	$prod_ids[] = $clsFilter->f2($data, 'prod_id', [['integer', "Неправильный идентификатор товара!"]], 'fatal');
+    	$clsFilter->f2($data, 'count', [['integer', "Неправильное количество товара!"]], 'fatal');
+    }
+    if (count($prod_ids) == 0) print_success("", $opts);
+    $prod_ids = implode(',', $prod_ids);
+
+    // получаем товары
+
+    $prods = [];
+    $sql = "SELECT `prod_id`, `prod_category_id`, `prod_title`, `prod_shortdesc`, `prod_price`, `prod_is_active`, `prod_count` FROM ".$clsMinishop->tbl_products." WHERE `prod_id` IN ({$prod_ids})";
+    $r = $database->query($sql);
+    if ($database->is_error()) print_error($database->get_error());
+    while($row = $r->fetchRow()) {
+    	$row['prod_price'] /= 100;
+    	$row['cart_count'] = $cart_prods[$row['prod_id']]['count'];
+    	$prods[$row['prod_id']] = $row;
+    }
+    
+    // получаем капчу
+    
+    require_once(WB_PATH.'/include/captcha/captcha.php');
+    
+    ob_start();
+    call_captcha('image_iframe'); echo ' = '; call_captcha('input');
+    $captcha = ob_get_contents();
+    ob_end_clean();
+    
+    // отображаем
+
+    print_success($clsMinishop->render('frontend_cart.twig', [
+    	'cart_prods'=>$cart_prods,
+    	'prods'=>$prods,
+    	'captcha'=>$captcha,
+    ], true), $opts);
+
 } else if ($action == 'edit_prop') {
 
     require(WB_PATH.'/modules/admin.php');

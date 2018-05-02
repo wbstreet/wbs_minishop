@@ -288,7 +288,7 @@ for (photo of photos) {
             "CURRENCY"            =>  "руб",
             "PROD_SHORT_DESCR"    =>  $arrProduct['prod_shortdesc'],
             "PROD_DESCR"          =>  preg_replace("/\n/", "<br>", $arrProduct['prod_desc']),
-            "PROD_MAIN_IMG_SRC"   =>  $photo_main,//$arrProduct['prod_image_name'] == 'default' ? $this->urlMedia.'product_default_image.jpg' : $this->urlMedia.$arrProduct['prod_id']."/".$arrProduct['prod_image_name'],
+            "PROD_MAIN_IMG_SRC"   =>  $photo_main,
             "ONCLICK_OPEN_WINDOW" =>  " onclick=\"W.open_by_api('window_product_info', {data: {product_id:'{$arrProduct['prod_id']}', page_id:'{$this->page_id}', section_id:'{$this->section_id}'}, url:mod_minishop.url_api, add_sheet:true})\"",//" onclick=\"minishop_show_window(this)\"",
             "PROD_PROPS"          =>  $props,
             'PROD_PHOTOS'         =>  $photos,

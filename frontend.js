@@ -198,42 +198,11 @@ class mod_minishop_Main {
     }
     
     cart_show_list() {
-        //if (getComputedStyle(el_for_insert).display == "none") {el_for_insert.style.display = "block";}
-        //else {el_for_insert.style.display = "none"; return;}
-
-        let el_for_insert = document.getElementById('product_cart_list2');
-            el_for_insert.innerHTML = "";
-
-            let prod_objs = this.cart.get_all();
-
-        sendform(document.createElement('p'), 'get_product_data', {
-                data: {products: JSON.stringify(prod_objs)},
-                answer_type: 'Notification',
-            url:this.url_api,
-            arg_func_success: prod_objs,
-            func_success: function(res, prod_objs) {
-                            let prod_html = '';
-                            let total_price = 0
-                            let i = 0;
-                            for (let prod_id in res['data']) {
-                                let prod = res['data'][prod_id];
-                                let prod_cart = prod_objs[prod.prod_id];
-
-                                prod_html += `<tr id="cartlist${prod.prod_id}" data-prod_id="${prod.prod_id}">
-                                <td>${i+1}. </td>
-                                <td>${prod.prod_title}</td>
-                                <td>${prod.prod_price}</td>
-                                <td class="prod_count_cart_list"><input onchange="mod_minishop.cart.add(${prod.prod_id}, this.value); mod_minishop.cart_show_list()" type="number" value="${prod_cart.count}"></td>
-                                <td class="button_delete_prod_from_cart" onclick="mod_minishop.cart.remove(${prod.prod_id}); mod_minishop_set_count_products(); mod_minishop.cart_show_list(); ">X</td>
-                                </tr>`;
-                
-                                total_price += prod_cart.count * prod.prod_price
-                                i += 1;
-                            }
-                            document.getElementById('total_price').innerHTML = total_price
-                            el_for_insert.innerHTML = prod_html
-                            //mod_minishop_show_menu_user_data(2);            	
-            }
+        var w = W.open_by_api('get_cart_list', {
+        	add_sheet:  true,
+        	max_count: 1,
+        	data:       {products: JSON.stringify(this.cart.get_all())},
+        	url:        this.url_api
         });
     }
     

@@ -24,7 +24,7 @@
     <br><span class="minishop_title_2">Форма заказа</span>
     <label><input type='radio' name='need_registration' value='1' {% if settings.need_registration == '1' %} checked {% endif %}>Заказ (пользователь должен быть зарегистрирован)</label><br>
     <label><input type='radio' name='need_registration' value='0' {% if settings.need_registration == '0' %} checked {% endif %}>Заявка (регистрация не требуется, отсутвует оплата, данные заказа хранятся в браузере пользователя)</label>
-    
+
     <br><span class="minishop_title_2">Область действия настроек</span>
     <label><input type='radio' name='is_general_settings' value='2' {% if settings.is_general_settings == '2' %} checked {% endif %}>На всём сайте</label>
     <!--<label><input type='radio' name='is_general_settings' value='1' {% if settings.is_general_settings == '1' %} checked  {% endif %}>На всей странице</label>-->

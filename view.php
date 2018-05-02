@@ -70,7 +70,16 @@ else $order_by = 'prod_title';
 </script>
 
 <?php $clsMinishop->print_cart_btn(); ?>
-<?php $clsMinishop->print_cart(); ?>
+
+<?php
+if ($minishop_settings['need_registration'] === '1') {
+	?>
+	
+	<input type="button" value="Мои заказы">
+	
+	<?php
+}
+?>
 
 <div style='float:right;'>
     <?php echo $TEXT['SORTED_BY']; ?>
