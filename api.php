@@ -27,90 +27,114 @@ $update_when_modified = false;
 include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
 $clsMinishop = new ModMinishop($page_id, $section_id);
 
-if ($action == 'content_confirm_order') {
-
-	$fio = $clsFilter->f('fio', [['1', "Вы не указали Ваше имя!"]], 'append', '');
-	$phone = $clsFilter->f('phone', [['1', "Вы не указали Ваш номер телефона!"]], 'append', '');
-	$delivery = $clsFilter->f('delivery', [['variants', "Не указан способ доставки!", ["self", "deliv"]]], 'append', '');
-	$products = json_decode($clsFilter->f('products', [['1', "Не выбраны товары!"]], 'append', ''), true);
-	if ($delivery=='deliv') $delivery_address = $clsFilter->f('delivery_address', [['1', "Не указан адрес доставки"]], 'append', '');
-	else $delivery_address = "";
-
-	$i_agree = $clsFilter->f('i_agree', [['variants', "Вы должны согласитиься с пользовательским соглашением!", ['true']]], 'append', '');
-
-	$captcha = $clsFilter->f('captcha', [['1', "Введите Защитный код!"], ['variants', "Введите Защитный код!", [$_SESSION['captcha']]]], 'append', '');
-
-	if ($clsFilter->is_error()) $clsFilter->print_error();
-
-	$comment = $clsFilter->f('comment', [['1', ""]], 'default', '');
+function check_cart() {
+	global $clsFilter;
 	
-    if ($delivery == 'self') $delivery = 'самовывоз';
-    else if ($delivery == 'deliv') $delivery = 'доставка';
-
-    if (count($products) == 0) print_error("Не выбраны товары!");
+    $cart_prods = json_decode($clsFilter->f('products', [['1', "Не добавлены товары в корзину!"]], "fatal"), true);
 	
-    // Определяем сайт
-    list($url, $is_true) = idn_decode(WB_URL);
-
-    // формирование тела письма
-
     $prod_ids = [];
-    foreach ($products as $i => $data) {
+    foreach ($cart_prods as $i => $data) {
     	$prod_ids[] = $clsFilter->f2($data, 'prod_id', [['integer', "Неправильный идентификатор товара!"]], 'fatal');
+    	$clsFilter->f2($data, 'count', [['integer', "Неправильное количество товара!"]], 'fatal');
     }
-    if (count($prod_ids) == 0) print_error("Не указаны товары!");
     $prod_ids = implode(',', $prod_ids);
+    
+    return [$cart_prods, $prod_ids];
+}
 
-    $prods = [];
-    $sql = "SELECT `prod_id`, `prod_category_id`, `prod_title`, `prod_shortdesc`, `prod_price`, `prod_is_active`, `prod_count` FROM ".$clsMinishop->tbl_products." WHERE `prod_id` IN ({$prod_ids})";
-    //print_error($sql);
-    $r = $database->query($sql);
-    if ($database->is_error(0)) print_error($database->get_error());
-    while($row = $r->fetchRow(MYSQLI_ASSOC)) {
-    	$row['prod_price'] /= 100;
-    	$row['count_to_order'] = (int)($products[$row['prod_id']]['count']);
-    	$prods[$row['prod_id']] = $row;
-    }
-
-    // отправка письма
+if ($action == 'content_confirm_order') {
 
     $minishop_settings = $clsMinishop->get_settings();
 
-    $body = $clsMinishop->render('letter_order.twig', [
-    	'fio'=>$fio,
-    	'phone'=>$phone,
-    	'prods'=>$prods,
-    	'comment'=>$comment,
-    	'delivery'=>$delivery,
-    	'delivery_address'=>$delivery_address,
-    ], true);
+    // принять данные корзины
 
-    $r = $clsEmail->send(
+    list($products, $prod_ids) = check_cart();
+    if (count($products) == 0) print_error("Не выбраны товары!");
 
-        $minishop_settings['admin_email'],
+    if ($minishop_settings['need_registration'] == '0') {
 
-        $body,
+    	$fio = $clsFilter->f('fio', [['1', "Вы не указали Ваше имя!"]], 'append', '');
+    	$phone = $clsFilter->f('phone', [['1', "Вы не указали Ваш номер телефона!"]], 'append', '');
+	    $delivery = $clsFilter->f('delivery', [['variants', "Не указан способ доставки!", ["self", "deliv"]]], 'append', '');
+	    if ($delivery=='deliv') $delivery_address = $clsFilter->f('delivery_address', [['1', "Не указан адрес доставки"]], 'append', '');
+    	else $delivery_address = "";
 
-        "Заказ из магазина $url",
+		$i_agree = $clsFilter->f('i_agree', [['variants', "Вы должны согласитиься с пользовательским соглашением!", ['true']]], 'append', '');
+	
+		$captcha = $clsFilter->f('captcha', [['1', "Введите Защитный код!"], ['variants', "Введите Защитный код!", [$_SESSION['captcha']]]], 'append', '');
+	
+		if ($clsFilter->is_error()) $clsFilter->print_error();
+	
+		$comment = $clsFilter->f('comment', [['1', ""]], 'default', '');
+		
+	    if ($delivery == 'self') $delivery = 'самовывоз';
+	    else if ($delivery == 'deliv') $delivery = 'доставка';
+	
+	    // Определяем сайт
+	    list($url, $is_true) = idn_decode(WB_URL);
+	
+	    // формирование тела письма
+	
+	    $prods = [];
+	    $sql = "SELECT `prod_id`, `prod_category_id`, `prod_title`, `prod_shortdesc`, `prod_price`, `prod_is_active`, `prod_count` FROM ".$clsMinishop->tbl_products." WHERE `prod_id` IN ({$prod_ids})";
+	    //print_error($sql);
+	    $r = $database->query($sql);
+	    if ($database->is_error(0)) print_error($database->get_error());
+	    while($row = $r->fetchRow(MYSQLI_ASSOC)) {
+	    	$row['prod_price'] /= 100;
+	    	$row['count_to_order'] = (int)($products[$row['prod_id']]['count']);
+	    	$prods[$row['prod_id']] = $row;
+	    }
+	
+	    // отправка письма
+	
+	    $body = $clsMinishop->render('letter_order.twig', [
+	    	'fio'=>$fio,
+	    	'phone'=>$phone,
+	    	'prods'=>$prods,
+	    	'comment'=>$comment,
+	    	'delivery'=>$delivery,
+	    	'delivery_address'=>$delivery_address,
+	    ], true);
+	
+	    $r = $clsEmail->send(
+	
+	        $minishop_settings['admin_email'],
+	
+	        $body,
+	
+	        "Заказ из магазина $url",
+	
+	        0, false
+	
+	    );
+	
+	    if ($r[0] !== true) print_error('Письмо не отправлено! ');
+	    
+	    print_success('Заказ успешно отправлен Администратору магазина');
+	
+    } else if ($minishop_settings['need_registration'] == '1') {
 
-        0, false
+        // проверить авторизованность. Если не авторизхован, то предложить форму авторизации.
 
-    );
+        // получить данные текущего пользователя
+        
+        // добавить запись заказа
 
-    if ($r[0] !== true) print_error('Письмо не отправлено! ');
-    
-    print_success('Заказ успешно отправлен Администратору магазина');
+        // сделать копии товаров
+
+        // сохранить данные корзины
+
+        // отправить по письму о заказе (пользователю и администратору)
+
+	    print_success('Заказ успешно оформлен. Необходимо совершить оплату заказа.');
+
+    }
 
 } else if ($action == 'get_product_data') {
 
-	$products = json_decode($clsFilter->f('products', [['1', "Не указаны товары!"]], 'fatal'), true);
-
-    $prod_ids = [];
-    foreach ($products as $i => $data) {
-    	$prod_ids[] = $clsFilter->f2($data, 'prod_id', [['integer', "Неправильный идентификатор товара!"]], 'fatal');
-    }
-    if (count($prod_ids) == 0) print_success("Успешно", ['data'=>[]]);
-    $prod_ids = implode(',', $prod_ids);
+    list($products, $prod_ids) = check_cart();
+    if (count($products) == 0) print_success("Успешно", ['data'=>[]]);
 
     $products = [];
     $sql = "SELECT `prod_id`, `prod_category_id`, `prod_title`, `prod_shortdesc`, `prod_price`, `prod_is_active`, `prod_count` FROM ".$clsMinishop->tbl_products." WHERE `prod_id` IN ({$prod_ids})";
@@ -128,17 +152,10 @@ if ($action == 'content_confirm_order') {
 
     $opts = ['title'=>'Корзина'];
 
-	$cart_prods = json_decode($clsFilter->f('products', [['1', "Не указаны товары!"]], 'fatal'), true);
-
     // проверяем корзину
 
-    $prod_ids = [];
-    foreach ($cart_prods as $i => $data) {
-    	$prod_ids[] = $clsFilter->f2($data, 'prod_id', [['integer', "Неправильный идентификатор товара!"]], 'fatal');
-    	$clsFilter->f2($data, 'count', [['integer', "Неправильное количество товара!"]], 'fatal');
-    }
-    if (count($prod_ids) == 0) print_success("", $opts);
-    $prod_ids = implode(',', $prod_ids);
+    list($cart_prods, $prod_ids) = check_cart();
+    if (count($cart_prods) == 0) print_success("", $opts);
 
     // получаем товары
 
