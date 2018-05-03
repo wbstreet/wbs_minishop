@@ -33,20 +33,53 @@
 	<br>
 	
 	<form id="mod_minishop_order_form" style="display:none;">
-		Как к Вам обращаться: <input type="text" name="fio"><br>
-		Ваш телефон: <input type="text" name="phone"><br>
-		Способ доставки:
-		<select name="delivery" onchange="if (this.value=='deliv') {document.getElementById('delivery_address').style.display='inline-block';} else {document.getElementById('delivery_address').style.display='none';}">
-		    <option value="self" checked>Самовывоз</option>
-		    <option value="deliv">Доставка</option>
-		</select><br>
-		<span style="display:none;" id="delivery_address">Куда доставить заказ? <input type="text" name="delivery_address"><br></span>
-		Комментарий к заказу: <br>
-		<textarea name="comment" cols="30" rows="3"></textarea><br><br>
 
-		<span style="text-align: right;">Защита от спама:</span> {{ captcha | raw }} <br>
+        <fieldset><legend> Контактная информация </legend>		
+    		<table>
+	    		<tr>
+	            	<td>Фамилия: </td><td> <input type="text" name="fio_first"></td>
+		        </tr><tr>
+	            	<td>Имя: </td><td> <input type="text" name="fio_second"></td>
+		        </tr><tr>
+	            	<td>Отчество: </td><td> <input type="text" name="fio_third"></td>
+		        </tr><tr>
+		            <td>Телефон: </td><td> <input type="text" name="phone"> </td>
+    		    </tr>
+	    	</table>
+        </fieldset>
 
-		<br><input type='checkbox' name='i_agree' required> Согласен (на) с условиями <a onclick="W.open_by_api('get_agreement')" style='cursor:pointer;'>Пользовательского соглашения</a><br>
+        <fieldset><legend> Доставка </legend>
+    		<select name="delivery" onchange="if (this.value=='deliv') {document.getElementById('delivery_data').style.display='inline-block';document.getElementById('self_data').style.display='none';} else {document.getElementById('delivery_data').style.display='none'; document.getElementById('self_data').style.display='inline-block';}">
+	    	    <option value="self" checked>Самовывоз</option>
+		        <option value="deliv">Доставка</option>
+	    	</select><br>
+
+            <div id="delivery_data" style="display:none;">
+            	{% if settings.has_delivery == 1 %}
+             		<span>Куда доставить заказ? <input type="text" name="delivery_address"></span>
+            	{% else %}
+             		Доставка недоступна. Приносим свои извинения.
+         		{% endif %}
+		    </div>
+		    
+            <div id="self_data">
+            	{% if settings.has_self_delivery == 1 %}
+            	    Адрес для самовывоза: {{ settings.address_self_delivery }}
+            	{% else %}
+             		Самовывоз недоступен. Приносим свои извинения.
+         		{% endif %}
+		    </div>
+        </fieldset>
+
+
+        <fieldset><legend> Прочее </legend>
+    		Комментарий к заказу: <br>
+	    	<textarea name="comment" cols="30" rows="3"></textarea><br><br>
+
+    		<span style="text-align: right;">Защита от спама:</span> {{ captcha | raw }} <br>
+
+	    	<br><input type='checkbox' name='i_agree' required> Согласен (на) с условиями <a onclick="W.open_by_api('get_agreement')" style='cursor:pointer;'>Пользовательского соглашения</a><br>
+        </fieldset>
 
 		<input type="button" value="Подтвердить" onclick="mod_minishop.order_confirm(this);">
 		<input type="button" value="Отменить" onclick="$('#mod_minishop_order_form').fadeToggle(); $('#mod_minishop_open_order_from').css({display:''});">

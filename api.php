@@ -53,7 +53,11 @@ if ($action == 'content_confirm_order') {
 
     if ($minishop_settings['need_registration'] == '0') {
 
-    	$fio = $clsFilter->f('fio', [['1', "Вы не указали Ваше имя!"]], 'append', '');
+    	$fio_first = $clsFilter->f('fio_first', [['1', "Вы не указали Ваше имя!"]], 'append', '');
+    	$fio_second = $clsFilter->f('fio_second', [['1', "Вы не указали Вашу фамилию!"]], 'append', '');
+    	$fio_third = $clsFilter->f('fio_third', [['1', "Вы не указали Ваше отчество!"]], 'append', '');
+        $fio = $fio_first .' '. $fio_second .' '. $fio_third ;
+
     	$phone = $clsFilter->f('phone', [['1', "Вы не указали Ваш номер телефона!"]], 'append', '');
 	    $delivery = $clsFilter->f('delivery', [['variants', "Не указан способ доставки!", ["self", "deliv"]]], 'append', '');
 	    if ($delivery=='deliv') $delivery_address = $clsFilter->f('delivery_address', [['1', "Не указан адрес доставки"]], 'append', '');
@@ -116,6 +120,7 @@ if ($action == 'content_confirm_order') {
     } else if ($minishop_settings['need_registration'] == '1') {
 
         // проверить авторизованность. Если не авторизхован, то предложить форму авторизации.
+        //if (!$admin->is_authoritated()) print_error('Для совершения заказа необходимо авторизоваться!');
 
         // получить данные текущего пользователя
         
@@ -184,6 +189,7 @@ if ($action == 'content_confirm_order') {
     	'cart_prods'=>$cart_prods,
     	'prods'=>$prods,
     	'captcha'=>$captcha,
+    	'settings'=> $clsMinishop->get_settings(),
     ], true), $opts);
 
 } else if ($action == 'edit_prop') {
@@ -340,8 +346,8 @@ if ($action == 'content_confirm_order') {
         $_section_id = $section_id; $_page_id = $page_id;
     }
 
-    if ($_POST['has_delivery']=='on') {$has_delivery = '1';} else {$has_delivery = '0';}
-    if ($_POST['has_self_delivery']=='on') {$has_self_delivery = '1';} else {$has_self_delivery = '0';}
+    if ($_POST['has_delivery']=='true') {$has_delivery = '1';} else {$has_delivery = '0';}
+    if ($_POST['has_self_delivery']=='true') {$has_self_delivery = '1';} else {$has_self_delivery = '0';}
     $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
     $sql .= '`admin_email`="'          .$database->escapeString($_POST['admin_email'])          .'", ';
     $sql .= '`admin_login`="'          .$database->escapeString($_POST['admin_login'])          .'", ';
