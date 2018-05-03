@@ -18,7 +18,9 @@ class ModMinishop extends Addon {
         $this->tbl_photos = "`".TABLE_PREFIX."mod_wbs_minishop_photos`";
         $this->tbl_prop = "`".TABLE_PREFIX."mod_wbs_minishop_prop`";
         $this->tbl_prop_values = "`".TABLE_PREFIX."mod_wbs_minishop_prop_values`";
-        
+        $this->tbl_order = "`".TABLE_PREFIX."mod_wbs_minishop_orders`";
+        $this->tbl_order_prods = "`".TABLE_PREFIX."mod_wbs_minishop_order_prods`";
+
         $this->process_error = 'echo';
         $this->clsStorageImg = new WbsStorageImg();
     }

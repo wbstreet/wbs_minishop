@@ -43,8 +43,14 @@ function check_cart() {
 }
 
 if ($action == 'content_confirm_order') {
+	
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
 
     $minishop_settings = $clsMinishop->get_settings();
+
+	$i_agree = $clsFilter->f('i_agree', [['variants', "Вы должны согласитиься с пользовательским соглашением!", ['true']]], 'fatal', '');
+	$captcha = $clsFilter->f('captcha', [['1', "Введите Защитный код!"], ['variants', "Введите Защитный код!", [$_SESSION['captcha']]]], 'fatal', '');
 
     // принять данные корзины
 
@@ -63,10 +69,6 @@ if ($action == 'content_confirm_order') {
 	    if ($delivery=='deliv') $delivery_address = $clsFilter->f('delivery_address', [['1', "Не указан адрес доставки"]], 'append', '');
     	else $delivery_address = "";
 
-		$i_agree = $clsFilter->f('i_agree', [['variants', "Вы должны согласитиься с пользовательским соглашением!", ['true']]], 'append', '');
-	
-		$captcha = $clsFilter->f('captcha', [['1', "Введите Защитный код!"], ['variants', "Введите Защитный код!", [$_SESSION['captcha']]]], 'append', '');
-	
 		if ($clsFilter->is_error()) $clsFilter->print_error();
 	
 		$comment = $clsFilter->f('comment', [['1', ""]], 'default', '');
@@ -123,12 +125,52 @@ if ($action == 'content_confirm_order') {
         //if (!$admin->is_authoritated()) print_error('Для совершения заказа необходимо авторизоваться!');
 
         // получить данные текущего пользователя
+
+        $sql = "SELECT * FROM `".TABLE_PREFIX."users` WHERE `user_id`=".process_value($admin->get_user_id());
+        $r = $database->query($sql);
+        if ($database->is_error()) print_error($database->get_error());
+        if ($r->numRows() == 0) print_error('Пользователь не найден!');
+        $user = $r->fetchRow();
         
         // добавить запись заказа
+        
+        $row = ['user_id'=>$user['user_id']];
+        $r = insert_row($clsMinishop->tbl_order, $row);
+        if ($r === false) print_error('Ошибка создания заказа');
+        if (gettype($r) === 'string') print_error($r);
+        $order_id = $database->getLastInsertId();
 
         // сделать копии товаров
 
+        $prods = [];
+        $sql = "SELECT * FROM ".$clsMinishop->tbl_products." WHERE `prod_id` IN (".$prod_ids.")";
+        $r = $database->query($sql);
+        if ($database->is_error()) print_error($database->get_error());
+        if ($r->numRows() == 0) print_error('Товары не найдены!');
+        while ($row = $r->fetchRow(MYSQL_ASSOC)) {
+        	$row['is_copy_for'] = $row['prod_id'];
+        	unset($row['prod_id']);
+            $prods[] = $row;
+        }
+        
+        $copy_prods = [];
+        foreach ($prods as $i=>$prod) {
+            $r = insert_row($clsMinishop->tbl_products, $prod);
+            if ($r === false) print_error('Ошибка создания заказа');
+            if (gettype($r) === 'string') print_error($r);
+            $copy_prods[$prod['is_copy_for']] = $database->getLastInsertId();
+        }
         // сохранить данные корзины
+
+        $fields = ['order_id', 'copy_prod_id', 'cart_count'];
+        $rows_values = [];
+        
+        foreach($products as $prod_id => $cart) {
+            $rows_values[] = [$order_id, $copy_prods[$prod_id], $cart['count']];
+        }
+        $r = insert_row($clsMinishop->tbl_order_prods, $fields, $rows_values);
+        if ($r === false) print_error('Ошибка сохранения заказа');
+        if (gettype($r) === 'string') print_error($r);
 
         // отправить по письму о заказе (пользователю и администратору)
 

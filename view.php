@@ -93,6 +93,7 @@ if ($minishop_settings['need_registration'] === '1') {
 
 $sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_products` WHERE ";
 $sql .= "`section_id`=$section_id AND ";
+$sql .= "`is_copy_for`=0 AND ";
 //$sql .= '`page_id`='.$page_id.' AND ';
 $sql .= "`prod_is_active`='1' ORDER BY `prod_category_id`, `$order_by`";
 $products = $database->query($sql);
