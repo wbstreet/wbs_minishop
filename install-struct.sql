@@ -92,6 +92,10 @@ CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_orders` (
     `order_id` INT(11) NOT NULL AUTO_INCREMENT,
     `user_id` INT(11) NOT NULL,
     `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `is_payed` INT(11) NOT NULL DEFAULT '0',
+    `is_cancelled` INT(11) NOT NULL DEFAULT '0',
+    `is_sended` INT(11) NOT NULL DEFAULT '0',
+    `is_shipped` INT(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (order_id)
 ){TABLE_ENGINE=MyISAM};
 
@@ -101,9 +105,5 @@ CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_order_prods` (
     `order_id` INT(11) NOT NULL,
     `copy_prod_id` INT(11) NOT NULL,
     `cart_count` INT(11) NOT NULL,
-    `is_payed` INT(11) NOT NULL DEFAULT '0',
-    `is_cancelled` INT(11) NOT NULL DEFAULT '0',
-    `is_sended` INT(11) NOT NULL DEFAULT '0',
-    `is_shipped` INT(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (order_prods_id)
 ){TABLE_ENGINE=MyISAM};

@@ -202,7 +202,7 @@ if ($action == 'content_confirm_order') {
     // проверяем корзину
 
     list($cart_prods, $prod_ids) = check_cart();
-    if (count($cart_prods) == 0) print_success("", $opts);
+    if (count($cart_prods) == 0) print_success("Корзина пуста. Начните добавлять товары!", $opts);
 
     // получаем товары
 
@@ -232,6 +232,39 @@ if ($action == 'content_confirm_order') {
     	'prods'=>$prods,
     	'captcha'=>$captcha,
     	'settings'=> $clsMinishop->get_settings(),
+    ], true), $opts);
+
+} else if ($action == 'get_order_list') {
+
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
+
+    $opts = ['title'=>'Мои заказы'];
+    
+    // Извлекаем заказы
+    
+    $orders = [];
+    $sql = "SELECT * FROM ".$clsMinishop->tbl_order." WHERE `user_id`=".process_value($admin->get_user_id());
+    $r = $database->query($sql);
+    if ($database->is_error()) print_error($database->get_error());
+    if ($r->numRows() == 0) print_error('Вы не сдедали ни одного заказа.');
+    while ($order = $r->fetchRow(MYSQL_ASSOC)) {
+    	
+    	$order['prods'] = [];
+    	
+	    $sql = "SELECT * FROM ".$clsMinishop->tbl_products.", ".$clsMinishop->tbl_order_prods." WHERE ".$clsMinishop->tbl_products.".`prod_id`=".$clsMinishop->tbl_order_prods.".`copy_prod_id` AND ".$clsMinishop->tbl_order_prods.".`order_id`=".process_value($order['order_id']);
+	    $r2 = $database->query($sql);
+	    if ($database->is_error()) print_error($database->get_error());
+	    while ($prod = $r2->fetchRow(MYSQL_ASSOC)) {
+	    	$order['prods'][] = $prod;
+	        //print_error(json_encode($prod));
+	    }
+    	
+        $orders[] = $order;
+    }
+
+    print_success($clsMinishop->render('frontend_orders.twig', [
+    	'orders'=>$orders
     ], true), $opts);
 
 } else if ($action == 'edit_prop') {

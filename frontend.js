@@ -196,7 +196,7 @@ class mod_minishop_Main {
         mod_minishop_set_count_products();
         mod_minishop_hide_form_product2cart(prod.prod_id);
     }
-    
+
     cart_show_list() {
         var w = W.open_by_api('get_cart_list', {
         	add_sheet:  true,
@@ -217,8 +217,16 @@ class mod_minishop_Main {
             mod_minishop_set_count_products();
             this.cart_show_list();
         }
+
+    order_show_list() {
+        var w = W.open_by_api('get_order_list', {
+        	add_sheet:  true,
+        	max_count: 1,
+        	url:       this.url_api
+        });
+    }
         
-        order_confirm(btn) {
+    order_confirm(btn) {
                 let prod_objs = this.cart.get_all();
 
                 sendform(btn, 'content_confirm_order', {

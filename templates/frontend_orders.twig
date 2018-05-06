@@ -1,0 +1,42 @@
+<style>
+    .order_done {color: green;}
+</style>
+
+<table>
+	{%for order in orders %}
+	    <tr style="background:#e5f2fd;">
+	    	<td colspan="4">Заказа № {{ order.order_id }} от {{ order.date_create }}</td>
+	   	</tr>
+        <tr>
+        	{% if order.is_payed == 1 %}
+            	<td class="order_done">Оплачено</td>
+            {% else %}
+            	<td> <input type="button" value="Оплатить"> </td>
+            {% endif %}
+           	<td colspan="3">
+           		{% if order.is_payed == 0 %}
+           		    <input type="button" value="Отменить">
+           		{% endif %}
+           		{% if order.is_shipped == 0 %}
+               	    <input type="button" value="Доставлен">
+               	{% else %}
+               	    Доставлен
+           		{% endif %}
+           	</td>
+        </tr>
+	   	{% set price_total = 0 %}
+    	{% for prod in order.prods %}
+	        <tr>
+	        	<td>{{ prod.prod_title }}</td>
+	        	<td width="20">{{ prod.cart_count }}</td>
+	        	<td width="10">X</td>
+	        	<td width="150">{{ prod.prod_price / 100 }} руб.</td>
+    	   	</tr>
+  		   	{% set price_total = price_total + (prod.prod_price * prod.cart_count) %}
+    	{% endfor %}
+	    <tr style="text-align:right;">
+	    	<td colspan="3" ></td>
+	    	<td width="150">Итого: {{ price_total / 100  }} руб.</td>
+	   	</tr>
+	{% endfor %}
+</table>

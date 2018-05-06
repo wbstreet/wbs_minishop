@@ -75,7 +75,7 @@ else $order_by = 'prod_title';
 if ($minishop_settings['need_registration'] === '1') {
 	?>
 	
-	<input type="button" value="Мои заказы">
+	<input type="button" value="Мои заказы" onclick="mod_minishop.order_show_list();">
 	
 	<?php
 }
