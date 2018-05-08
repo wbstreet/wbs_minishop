@@ -126,6 +126,7 @@ class mod_minishop_Main {
                 this.cart_show_list = this.cart_show_list.bind(this);
                 this.cart_recount_list = this.cart_recount_list.bind(this);
                 this.order_confirm = this.order_confirm.bind(this);
+                this.order_cancel = this.order_cancel.bind(this);
         }
         
     /*request(api_name, data, sets) {
@@ -225,7 +226,19 @@ class mod_minishop_Main {
         	url:       this.url_api
         });
     }
-        
+
+    order_cancel(btn) {
+    	sendform(null, 'order_cancel', {
+    		url:this.url_api,
+    		data:{order_id:btn.closest('tr').dataset.order_id},
+    		arg_func_success: btn,
+    		func_success: function(res, btn) {
+    			btn.closest('tr').querySelector('.orders_text_cancelled').style.display = "inline-block";
+    			btn.remove();
+    		}
+    	});
+    }
+
     order_confirm(btn) {
                 let prod_objs = this.cart.get_all();
 

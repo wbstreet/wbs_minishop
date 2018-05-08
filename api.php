@@ -238,18 +238,20 @@ if ($action == 'content_confirm_order') {
 
 	$page_id = 1;
     require(WB_PATH.'/modules/admin.php');
+    $is_admin = $admin->get_user_id() == 1 ? true : false;
 
     $opts = ['title'=>'Мои заказы'];
     
     // Извлекаем заказы
     
     $orders = [];
-    $sql = "SELECT * FROM ".$clsMinishop->tbl_order." WHERE `user_id`=".process_value($admin->get_user_id());
+    $sql = "SELECT * FROM ".$clsMinishop->tbl_order;
+    if (!$is_admin) $sql .= " WHERE `user_id`=".process_value($admin->get_user_id());
     $r = $database->query($sql);
     if ($database->is_error()) print_error($database->get_error());
-    if ($r->numRows() == 0) print_error('Вы не сдедали ни одного заказа.');
+    if ($r->numRows() == 0) print_error('Вы не сделали ни одного заказа.');
     while ($order = $r->fetchRow(MYSQL_ASSOC)) {
-    	
+
     	$order['prods'] = [];
     	
 	    $sql = "SELECT * FROM ".$clsMinishop->tbl_products.", ".$clsMinishop->tbl_order_prods." WHERE ".$clsMinishop->tbl_products.".`prod_id`=".$clsMinishop->tbl_order_prods.".`copy_prod_id` AND ".$clsMinishop->tbl_order_prods.".`order_id`=".process_value($order['order_id']);
@@ -264,8 +266,44 @@ if ($action == 'content_confirm_order') {
     }
 
     print_success($clsMinishop->render('frontend_orders.twig', [
-    	'orders'=>$orders
+    	'orders'=>$orders,
+    	'is_admin'=>$is_admin
     ], true), $opts);
+
+} else if ($action == 'order_cancel') {
+
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
+    
+   	$order_id = $clsFilter->f('order_id', [['integer', "Вы не указали код заказа!"]], 'fatal');
+   	
+   	
+   	// вынимаем данные заказа
+   	
+    $sql = "SELECT * FROM ".$clsMinishop->tbl_order." WHERE `order_id`=".process_value($order_id)." AND `user_id`=".process_value($admin->get_user_id());
+	$r = $database->query($sql);
+	if ($database->is_error()) print_error($database->get_error());
+	if ($r->numRows() === 0) print_error("Заказ не найден!");
+	$order = $r->fetchRow(MYSQL_ASSOC);
+	
+	// Проверяем заказ
+	
+	if ($order['is_payed'] === '1' || $order['is_shipped'] === '1' || $order['is_sended'] === '1') {
+		print_error('Заказ уже нельзя отменить!');
+	}
+	
+	
+	if ($order['is_cancelled'] === '1') {
+		print_error('Заказ был отменён ранее!');
+	}
+	
+	// Отменяем заказ
+	
+	$sql = "UPDATE {$clsMinishop->tbl_order} SET `is_cancelled`=1 WHERE `order_id`=".process_value($order_id);
+	$r = $database->query($sql);
+	if ($database->is_error()) print_error($database->get_error());
+
+    print_success("Заказ успешно отменён");
 
 } else if ($action == 'edit_prop') {
 

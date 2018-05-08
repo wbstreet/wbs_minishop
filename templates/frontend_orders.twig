@@ -1,26 +1,27 @@
-<style>
-    .order_done {color: green;}
-</style>
+{% set show_btn_cancelled = order.is_payed == 0 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
 
 <table>
 	{%for order in orders %}
-	    <tr style="background:#e5f2fd;">
+	    <tr style="background:#e5f2fd;border-bottom:1px solid #b7deff;">
 	    	<td colspan="4">Заказа № {{ order.order_id }} от {{ order.date_create }}</td>
 	   	</tr>
-        <tr>
-        	{% if order.is_payed == 1 %}
-            	<td class="order_done">Оплачено</td>
-            {% else %}
-            	<td> <input type="button" value="Оплатить"> </td>
-            {% endif %}
+        <tr style="background:#e5f2fd;" data-order_id="{{ order.order_id }}">
+        	<td>
+           		{% if order.is_payed == 0 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
+                	<input type="button" value="Оплатить">
+       	    	{% elseif order.is_payed == 1 %}
+                	Оплачено
+                {% endif %}
+            </td>
            	<td colspan="3">
-           		{% if order.is_payed == 0 %}
-           		    <input type="button" value="Отменить">
+           		{% if show_btn_cancelled %}
+           		    <input type="button" value="Отменить" onclick="mod_minishop.order_cancel(this);">
            		{% endif %}
-           		{% if order.is_shipped == 0 %}
-               	    <input type="button" value="Доставлен">
-               	{% else %}
-               	    Доставлен
+           		<span class="orders_text_cancelled" style="{% if show_btn_cancelled %} display:none; {% endif %}">Отменено</span>
+           		{% if order.is_payed == 1 and order.is_cancelled == 0 and order.is_sended == 1 and order.is_shipped == 0 %}
+               	    <input type="button" value="Подтвердить доставку">
+               	{% elseif order.is_shipped == 1 %}
+               	    Доставлено
            		{% endif %}
            	</td>
         </tr>
