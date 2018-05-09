@@ -16,7 +16,7 @@
 #button_hide_menu_data {display: none;}
 .minishop_button_menu {display:inline-block; background: #334C90; cursor:pointer;color: #fff; font-size: 13pt; text-align:center; padding: 10px 5px 10px 5px;}
 
-.button_add2cart {display:inline-block; width:90%; background: rgba(51, 76, 144, 0.6) ; cursor:pointer;color: #fff;}
+.button_add2cart {display:inline-block; width:90%; background: #d89a00; cursor:pointer;color: #fff;}
 .product_count2cart {width: 50px;}
 
 .button_delete_prod_from_cart {

@@ -1,0 +1,9 @@
+Заказ № {{ order.order_id }}
+
+<br><br>
+
+<form>
+	<input type="hidden" name="order_id" value="{{ order.order_id }}">
+    Номер для отслеживания:<br>
+    <input name="post_track_code" type="text" size="15" maxlength="15" value="{{ order.post_track_code }}" onchange="mod_minishop.order_do(this, 'send');">
+</form>

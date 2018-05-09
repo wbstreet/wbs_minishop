@@ -42,6 +42,24 @@ function check_cart() {
     return [$cart_prods, $prod_ids];
 }
 
+function get_order($sets, $only_count=false) {
+	global $clsMinishop;
+
+	$r = $clsMinishop->get_order($sets, $only_count);
+	if (gettype($r) === "string") print_error($r);
+	if ($r === null) print_error("Заказ не найден!");
+	return $r->fetchRow(MYSQL_ASSOC);
+}
+
+function update_order($order_id, $name, $value) {
+	global $clsMinishop, $database;
+	
+	$sql = "UPDATE {$clsMinishop->tbl_order} SET ".process_key($name)."=".process_value($value)." WHERE `order_id`=".process_value($order_id);
+	$r = $database->query($sql);
+	if ($database->is_error()) print_error($database->get_error());
+}
+
+
 if ($action == 'content_confirm_order') {
 	
 	$page_id = 1;
@@ -276,15 +294,11 @@ if ($action == 'content_confirm_order') {
     require(WB_PATH.'/modules/admin.php');
     
    	$order_id = $clsFilter->f('order_id', [['integer', "Вы не указали код заказа!"]], 'fatal');
-   	
-   	
+
    	// вынимаем данные заказа
    	
-    $sql = "SELECT * FROM ".$clsMinishop->tbl_order." WHERE `order_id`=".process_value($order_id)." AND `user_id`=".process_value($admin->get_user_id());
-	$r = $database->query($sql);
-	if ($database->is_error()) print_error($database->get_error());
-	if ($r->numRows() === 0) print_error("Заказ не найден!");
-	$order = $r->fetchRow(MYSQL_ASSOC);
+	$sets = ['order_id'=>$order_id, 'user_id'=>$admin->get_user_id()];
+	$order = get_order($sets);
 	
 	// Проверяем заказ
 	
@@ -298,12 +312,85 @@ if ($action == 'content_confirm_order') {
 	}
 	
 	// Отменяем заказ
-	
-	$sql = "UPDATE {$clsMinishop->tbl_order} SET `is_cancelled`=1 WHERE `order_id`=".process_value($order_id);
-	$r = $database->query($sql);
-	if ($database->is_error()) print_error($database->get_error());
+	update_order($order_id, 'is_cancelled', 1);
 
     print_success("Заказ успешно отменён");
+
+} else if ($action == 'order_pay') {
+
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
+    
+   	$order_id = $clsFilter->f('order_id', [['integer', "Вы не указали код заказа!"]], 'fatal');
+
+   	// вынимаем данные заказа
+   	
+	$sets = ['order_id'=>$order_id, 'user_id'=>$admin->get_user_id()];
+	$order = get_order($sets);
+	
+	// обновляем 
+	update_order($order_id, 'is_payed', 1);
+
+    print_success("Заказ успешно оплачен");
+
+} else if ($action == 'order_send') {
+
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
+    $is_admin = $admin->get_user_id() == 1 ? true : false;
+    
+    if (!$is_admin) print_error('Функция недоступна!');
+    
+   	$order_id = $clsFilter->f('order_id', [['integer', "Вы не указали код заказа!"]], 'fatal');
+   	$track_code = $clsFilter->f('post_track_code', [['1', "Вы не указали номер отслеживания посывлки!"]], 'fatal');
+
+   	// вынимаем данные заказа
+   	
+	$sets = ['order_id'=>$order_id];
+	$order = get_order($sets);
+	
+	// обновляем 
+	update_order($order_id, 'is_sended', 1);
+	update_order($order_id, 'post_track_code', $track_code);
+
+    print_success("Заказ успешно помечен как отправлен");
+
+} else if ($action == 'order_ship') {
+
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
+    
+   	$order_id = $clsFilter->f('order_id', [['integer', "Вы не указали код заказа!"]], 'fatal');
+
+   	// вынимаем данные заказа
+   	
+	$sets = ['order_id'=>$order_id, 'user_id'=>$admin->get_user_id()];
+	$order = get_order($sets);
+	
+	// обновляем 
+	update_order($order_id, 'is_shipped', 1);
+	update_order($order_id, 'date_shipped', curtime());
+
+    print_success("Заказ успешно помечен как доставленным");
+
+} else if ($action == 'get_order_mark_sended') {
+
+    $opts = ['title'=>'Пометить заказ как отправленный'];
+
+	$page_id = 1;
+    require(WB_PATH.'/modules/admin.php');
+    $is_admin = $admin->get_user_id() == 1 ? true : false;
+    
+    if (!$is_admin) print_error('Функция недоступна!');
+    
+   	$order_id = $clsFilter->f('order_id', [['integer', "Вы не указали код заказа!"]], 'fatal');
+
+	$order = get_order(['order_id'=>$order_id]);
+
+    print_success($clsMinishop->render('frontend_orders_mark_sended.twig', [
+    	'order'=>$order,
+    	'is_admin'=>$is_admin
+    ], true), $opts);
 
 } else if ($action == 'edit_prop') {
 

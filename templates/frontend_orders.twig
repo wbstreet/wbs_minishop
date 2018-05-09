@@ -1,28 +1,44 @@
-{% set show_btn_cancelled = order.is_payed == 0 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
-
 <table>
 	{%for order in orders %}
+	    {% set show_btn_cancelled = order.is_payed == 0 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
+	    {% set show_btn_payed = order.is_payed == 0 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
+	    {% set show_btn_sended = order.is_payed == 1 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
+	    {% set show_btn_shipped = order.is_payed == 1 and order.is_cancelled == 0 and order.is_sended == 1 and order.is_shipped == 0 %}
+
 	    <tr style="background:#e5f2fd;border-bottom:1px solid #b7deff;">
 	    	<td colspan="4">Заказа № {{ order.order_id }} от {{ order.date_create }}</td>
 	   	</tr>
         <tr style="background:#e5f2fd;" data-order_id="{{ order.order_id }}">
         	<td>
-           		{% if order.is_payed == 0 and order.is_cancelled == 0 and order.is_sended == 0 and order.is_shipped == 0 %}
-                	<input type="button" value="Оплатить">
-       	    	{% elseif order.is_payed == 1 %}
-                	Оплачено
+           		{% if show_btn_payed %}
+                	<input class="orders_btn_pay" type="button" value="Оплатить" onclick="mod_minishop.order_do(this, 'pay');">
                 {% endif %}
+           		<span class="orders_text_payed" style="{% if order.is_payed != 1 %} display:none; {% endif %}">Оплачен.</span>
+
+           		{% if order.is_payed == 1 %}
+               		{% if order.is_sended == 1 %} Отправлен {% endif %}
+               		{% if order.is_sended != 1 %} Ожидает отправки {% endif %}
+           		{% endif %}
             </td>
            	<td colspan="3">
+           		{% if is_admin %}
+           		    {% if show_btn_sended %}
+                    	<input class="orders_btn_send" type="button" value="Пометить товар отправленным" onclick="mod_minishop.order_do(this, 'send_w');">
+           		    {% endif %}
+           		{% endif %}
+           		{% if order.is_sended %}
+           		    <a href="https://www.pochta.ru/tracking#{{ order.post_track_code }}" target="_balnk">{{ order.post_track_code }}</a>
+           		{% endif %}
+
            		{% if show_btn_cancelled %}
-           		    <input type="button" value="Отменить" onclick="mod_minishop.order_cancel(this);">
+           		    <input class="orders_btn_cancel"  type="button" value="Отменить" onclick="mod_minishop.order_do(this, 'cancel');">
            		{% endif %}
-           		<span class="orders_text_cancelled" style="{% if show_btn_cancelled %} display:none; {% endif %}">Отменено</span>
-           		{% if order.is_payed == 1 and order.is_cancelled == 0 and order.is_sended == 1 and order.is_shipped == 0 %}
-               	    <input type="button" value="Подтвердить доставку">
-               	{% elseif order.is_shipped == 1 %}
-               	    Доставлено
+           		<span class="orders_text_cancelled" style="{% if order.is_cancelled != 1 %} display:none; {% endif %}">Отменено.</span>
+
+           		{% if show_btn_shipped %}
+               	    <input class="orders_btn_shipped" type="button" value="Подтвердить доставку" onclick="mod_minishop.order_do(this, 'ship');">
            		{% endif %}
+           		<span class="orders_text_shipped" style="{% if order.is_shipped != 1 %} display:none; {% endif %}">Доставлено{% if order.is_shipped == 1 %} {{ order.date_shipped }} {% endif %}.</span>
            	</td>
         </tr>
 	   	{% set price_total = 0 %}

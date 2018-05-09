@@ -96,6 +96,8 @@ CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_orders` (
     `is_cancelled` INT(11) NOT NULL DEFAULT '0',
     `is_sended` INT(11) NOT NULL DEFAULT '0',
     `is_shipped` INT(11) NOT NULL DEFAULT '0',
+    `date_shipped` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `post_track_code` VARCHAR(15),
     PRIMARY KEY (order_id)
 ){TABLE_ENGINE=MyISAM};
 

@@ -317,6 +317,24 @@ for (photo of photos) {
         $row = $r->fettchRow();
         return $row['prod_is_hit'] === '1' ? '1' : '0';
     }
+
+    function get_order($sets=[], $only_count=false) {
+
+        $tables = [$this->tbl_order];
+
+        $where = [
+        ];
+
+        $where_opts = [
+                'order_id'=>"{$this->tbl_order}.`order_id`",
+                'user_id'=>"{$this->tbl_order}.`user_id`",
+        ];
+        
+        $where_find = [];
+        
+        return get_obj($tables, $where, $where_opts, $where_find, $sets, $only_count);
+    }
+    
 }
 
 ?>

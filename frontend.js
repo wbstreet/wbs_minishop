@@ -126,7 +126,7 @@ class mod_minishop_Main {
                 this.cart_show_list = this.cart_show_list.bind(this);
                 this.cart_recount_list = this.cart_recount_list.bind(this);
                 this.order_confirm = this.order_confirm.bind(this);
-                this.order_cancel = this.order_cancel.bind(this);
+                this.order_do = this.order_do.bind(this);
         }
         
     /*request(api_name, data, sets) {
@@ -167,7 +167,7 @@ class mod_minishop_Main {
         let prod = this.get_prod_data(btn);
 
         let span =  prod.tile.querySelector(".count2cart_form");
-        if (mod_minishop_current_prodform != null) mod_minishop_hide_form_product2cart(mod_minishop_current_prodform);
+        if (mod_minishop_current_prodform !== null) mod_minishop_hide_form_product2cart(mod_minishop_current_prodform);
         if (mod_minishop_current_prodform == prod.prod_id) {mod_minishop_current_prodform = null; return;}
 
         if (getComputedStyle(span).display=='none') {
@@ -212,7 +212,7 @@ class mod_minishop_Main {
             for (let i=0; i< pcl.length; i++) {
                 let prod_tag = pcl[i];
                 let prod_count = prod_tag.querySelector('.prod_count_cart_list').children[0].value;
-                if (prod_count == 0) {prod_tag.remove();  i-=1;}
+                if (prod_count === 0) {prod_tag.remove();  i-=1;}
                 this.cart.add(prod_tag.dataset.prod_id, prod_count);
             }
             mod_minishop_set_count_products();
@@ -227,18 +227,68 @@ class mod_minishop_Main {
         });
     }
 
-    order_cancel(btn) {
-    	sendform(null, 'order_cancel', {
-    		url:this.url_api,
-    		data:{order_id:btn.closest('tr').dataset.order_id},
-    		arg_func_success: btn,
-    		func_success: function(res, btn) {
-    			btn.closest('tr').querySelector('.orders_text_cancelled').style.display = "inline-block";
-    			btn.remove();
-    		}
-    	});
-    }
+    order_do(btn, order_action) {
+    	
+    	var action = 'order_'+order_action
+    	
+    	if (order_action == "cancel") {
+    	
+        	if (!confirm("Вы действительно хотите отменить заказ?")) return;
 
+    	    sendform(null, action, {
+        		url:this.url_api,
+        		data:{order_id:btn.closest('tr').dataset.order_id},
+    	    	arg_func_success: btn,
+    		    func_success: function(res, btn) {
+    		    	btn.closest('tr').querySelector('.orders_text_cancelled').style.display = "inline-block";
+    		    	btn.closest('tr').querySelector('.orders_btn_pay').remove();
+    		    	btn.remove();
+        		}
+        	});
+
+    	} else if (order_action == "pay") {
+    		
+    	    sendform(null, action, {
+        		url:this.url_api,
+        		data:{order_id:btn.closest('tr').dataset.order_id},
+    	    	arg_func_success: btn,
+    		    func_success: function(res, btn) {
+    		    	btn.closest('tr').querySelector('.orders_text_payed').style.display = "inline-block";
+    		    	btn.closest('tr').querySelector('.orders_btn_cancel').remove();
+    		    	btn.remove();
+        		}
+        	});
+    		
+    	} else if (order_action == "ship") {
+
+        	if (!confirm("Вы действительно хотите подтвердить доставку заказа?")) return;
+
+    	    sendform(null, action, {
+        		url:this.url_api,
+        		data:{order_id:btn.closest('tr').dataset.order_id},
+    	    	arg_func_success: btn,
+    		    func_success: function(res, btn) {
+    		    	btn.closest('tr').querySelector('.orders_text_shipped').style.display = "inline-block";
+    		    	btn.remove();
+        		}
+        	});
+
+    	} else if (order_action == "send_w") {
+
+            var w = W.open_by_api('get_order_mark_sended', {
+            	add_sheet:  true,
+            	max_count: 1,
+        	    url:       this.url_api,
+        	    data:{order_id:btn.closest('tr').dataset.order_id}
+            });
+
+    	} else if (order_action == "send") {
+
+    	    sendform(btn, action, {url:this.url_api});
+
+    	}
+    }
+    
     order_confirm(btn) {
                 let prod_objs = this.cart.get_all();
 
