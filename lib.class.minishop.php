@@ -46,7 +46,7 @@ class ModMinishop extends Addon {
         global $admin, $database;
         
         $block_html = "
-        <span class='product_title'>{{PROD_TITLE}}</span><br>
+        <a href=\"{{PROD_URL}}\" class='product_title'>{{PROD_TITLE}}</a><br>
         <span class='product_full_price'><span class='product_price'>{{PROD_PRICE}}</span> <span class='currency'>{{CURRENCY}}</span></span><br>
         <img class='product_main_pic' src='{{PROD_MAIN_IMG_SRC}}' {{ONCLICK_OPEN_WINDOW|raw}}><br>
         <span class='product_short_description'>{{PROD_SHORT_DESCR}}</span>
@@ -295,6 +295,7 @@ for (photo of photos) {
             "PROD_PROPS"          =>  $props,
             'PROD_PHOTOS'         =>  $photos,
             'PROD_IS_HIT'         =>  $arrProduct['prod_is_hit'],
+            'PROD_URL'            => page_link($arrProduct['prod_link']),
             ];
     }
     
