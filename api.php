@@ -577,28 +577,48 @@ if ($action == 'content_confirm_order') {
 
 } else if ($action == 'update_product') {
 	
-    require(WB_PATH.'/modules/admin.php');
-	
-    $prod_id = $admin->get_post('prod_id');
-
-    if ($admin->get_post('prod_is_active')==='true') {$is_active = '1';} else {$is_active = '0';}
-    
-    $fields = [
-        'prod_category_id' => $admin->get_post('prod_category_id'),
-        'prod_title' => $admin->get_post('prod_title'),
-        'prod_shortdesc' => $admin->get_post('prod_shortdesc'),
-        'prod_desc' => $admin->get_post('prod_desc'),
-        'prod_price' => (float)$admin->get_post('prod_price') * 100,
-        'prod_is_active' => $is_active,
-        'prod_count' => $admin->get_post('prod_count'),
-        'prop_value_ids'=>json_encode($_POST['prop_value']),
-        'prod_is_hit' => $admin->get_post('prod_is_hit'),
-        ];
-
-    $forupdate = glue_fields($fields, ',');
-
-    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.$database->escapeString($section_id).'" AND `prod_id`="'.$database->escapeString($prod_id).'"';
-    if ($database->query($sql)) { print_success("Товар обновлён!"); }
+        /* `is_copy_for`=0 необходимо, чтобы не позволить изменить данные копии товара, заказанного пользователем.
+        */
+        
+    require(WB_PATH.'/modules/admin.php');
+        
+    $prod_id = $admin->get_post('prod_id');
+    if ($admin->get_post('prod_is_active')==='true') {$is_active = '1';} else {$is_active = '0';}
+    $prod_title = $admin->get_post('prod_title');
+
+    // вынимаем товар из базы
+    
+    $r = select_row('`'.TABLE_PREFIX.'mod_wbs_minishop_products`', '`prod_title`', "`prod_id`=".process_value($prod_id)." AND `is_copy_for`=0");
+    if (gettype($r) === 'string') print_error($r);
+    if ($r === null) print_error('Товар не найден!');
+    $prod = $r->fetchRow();
+
+    // формируем ссылку
+
+    list($is_error, $prod_link) = createAccessFile($prod_id, $prod_title, $prod['prod_title'], $page_id, $section_id, $clsMinishop->name);
+    if ($is_error) {
+         print_error($prod_link);
+    }
+
+    // обновляем
+    
+    $fields = [
+        'prod_category_id' => $admin->get_post('prod_category_id'),
+        'prod_title' => $prod_title,
+        'prod_shortdesc' => $admin->get_post('prod_shortdesc'),
+        'prod_desc' => $admin->get_post('prod_desc'),
+        'prod_price' => (float)$admin->get_post('prod_price') * 100,
+        'prod_is_active' => $is_active,
+        'prod_count' => $admin->get_post('prod_count'),
+        'prop_value_ids'=>json_encode($_POST['prop_value']),
+        'prod_is_hit' => $admin->get_post('prod_is_hit'),
+        'prod_link'=> $prod_link,
+        ];
+
+    $forupdate = glue_fields($fields, ',');
+
+    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.$database->escapeString($section_id).'" AND `prod_id`="'.$database->escapeString($prod_id).' AND `is_copy_for`=0"';
+    if ($database->query($sql)) { print_success("Товар обновлён!"); }
     else print_error($database->get_error());
 
 } else if ($action == 'content_form_product') {
