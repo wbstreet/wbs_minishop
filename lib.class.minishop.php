@@ -299,10 +299,6 @@ for (photo of photos) {
             ];
     }
     
-    function wrap_product_tile($html, $arrProduct) {
-        return "<div class='product' id='product{$arrProduct['prod_id']}' data-prod_id='{$arrProduct['prod_id']}' data-section_id='{$this->section_id}' data-page_id='{$this->page_id}'>".$html."</div>";
-    }
-    
     function print_cart_btn() {
         $this->render("frontend_cart_btn.twig", []);
     }
