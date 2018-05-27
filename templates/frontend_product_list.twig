@@ -1,0 +1,39 @@
+<script src="{{ WB_URL }}/modules/wbs_minishop/frontend2.js"></script> <!-- Только для одностраничника!!! -->
+<link href="{{ WB_URL }}/modules/wbs_minishop/frontend.css" rel="stylesheet"> <!-- Только для одностраничника!!! -->
+
+<style>{{ settings.block_css }} </style>
+
+<style> {{ settings.window_css }} </style>
+{{ includes|raw }}
+
+<script>
+    var section_id = {{ section_id }};
+    var page_id = {{ page_id }};
+    var is_common_cart = {{ is_common_cart }};
+
+    "use strict";
+    
+    mod_minishop = new mod_minishop_Main(section_id, page_id);
+</script>
+
+{% include 'frontend_cart_btn.twig' %}
+
+{% if settings.need_registration == '1' %}
+        <input type="button" value="Мои заказы" onclick="mod_minishop.order_show_list();">
+{% endif %}
+
+<div style='float:right;'>
+    {{ TEXT.SORTED_BY }}
+    <select onchange='window.location.search = "?sorted_by=" + this.value;'>
+        <option value="name"  {% if order_by == 'prod_name'  %} selected {% endif %}> {{ TEXT.SORTED_BY_TITLE }}</option>
+        <option value="price" {% if order_by == 'prod_price' %} selected {% endif %}> {{ TEXT.SORTED_BY_PRICE }}</option>
+    </select>
+</div><br>
+
+<div class="view_products"> 
+    {% for prod in prods %}
+        {% include 'frontend_product_wrap.twig' with prod %}
+    {% endfor %}
+</div>
+
+<script src="{{ WB_URL }}/modules/wbs_minishop/frontend_after.js" defer></script>
