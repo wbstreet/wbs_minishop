@@ -407,9 +407,12 @@ if ($action == 'content_confirm_order') {
 
 } else if ($action == 'window_product_info') {
 
-	$product_id = $clsFilter->f('product_id', [['integer']], 'fatal');
-	
-	// извлекаем данные о товаре
+        
+    require(WB_PATH.'/modules/admin.php');
+
+        $product_id = $clsFilter->f('product_id', [['integer']], 'fatal');
+        
+        // извлекаем данные о товаре
     
     $products = $clsMinishop->get_product(['product_id'=>$product_id]);
     if ($products === null) print_error('Товар не найден!');
@@ -420,14 +423,14 @@ if ($action == 'content_confirm_order') {
     
     $minishop_settings = $clsMinishop->get_settings();
     
-    $loader = new Twig_Loader_Array(array(
-        'window_html' => $clsMinishop->wrap_product_tile($minishop_settings['window_html'], $product),
-	));
-	$twig = new Twig_Environment($loader);
+    $clsMinishop->add_loader('array', [
+        'block_html' => $minishop_settings['window_html'],
+    ]);
 
-    $array_vars = $clsMinishop->get_product_vars($product);
-    
-    print_success($twig->render('window_html', $array_vars), ['title'=>$product['prod_title']]);
+    $array_vars = array_merge($clsMinishop->get_product_vars($product), ['section_id'=>$section_id,'page_id'=>$page_id]);
+    print_success($clsMinishop->render('frontend_product_wrap.twig', $array_vars, true), ['title'=>$product['prod_title']]);
+
+
 
 } else if ($action == 'window_property_edit') {
 
