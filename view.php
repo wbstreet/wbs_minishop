@@ -38,9 +38,43 @@ include('common.php');
 $clsMinishop = new ModMinishop($page_id, $section_id);
 $minishop_settings = $clsMinishop->get_settings();
 
+if (function_exists('wbs_core_include')) {
+        ob_start(); 
+        wbs_core_include(['functions.js', 'windows.js', 'windows.css']);
+        $incl = ob_get_contents();
+    ob_end_clean();
+} else {$incl = "";}
+
+$common_array = [
+        "includes"=>$incl,
+        "section_id"=>$section_id,
+        "page_id"=>PAGE_ID,
+        "is_common_cart"=>json_encode($clsMinishop->is_common_cart),
+        "settings"=>$minishop_settings,
+        "TEXT"=>$TEXT,
+        "WB_URL"=>WB_URL,
+];
+
 if (isset($prod_id)) {
         
+        $sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_products` WHERE ";
+        $sql .= "`prod_id`=$prod_id AND ";
+        $sql .= "`is_copy_for`=0 ";
+        //$sql .= '`page_id`='.$page_id.' AND ';
+        $r = $database->query($sql);
+        $current_category_id = '';
+        if ($r !== null) {
+                $prod = $r->fetchRow(MYSQL_ASSOC);
+
+            $category_id = $prod['prod_category_id'];
+            $count = $product['prod_count'];
         
+        
+                $clsMinishop->render('frontend_product.twig', array_merge(
+                        $clsMinishop->get_product_vars($prod),
+                        $common_array
+                ));
+        }
         
 } else {
 
@@ -52,13 +86,6 @@ if (isset($prod_id)) {
         if ($order_by == 'name') $order_by = 'prod_title';
         else if ($order_by == 'price') $order_by = 'prod_price';
         else $order_by = 'prod_title';
-        
-        if (function_exists('wbs_core_include')) {
-                ob_start(); 
-                wbs_core_include(['functions.js', 'windows.js', 'windows.css']);
-                $incl = ob_get_contents();
-            ob_end_clean();
-        } else {$incl = "";}
         
         // Вынимаем товары
         
@@ -83,15 +110,9 @@ if (isset($prod_id)) {
             $prods[] = $clsMinishop->get_product_vars($product);
         }
         
-        $clsMinishop->render('frontend_product_list.twig', [
-                "settings"=>$minishop_settings,
-                "includes"=>$incl,
-                "section_id"=>$section_id,
-                "page_id"=>PAGE_ID,
-                "is_common_cart"=>json_encode($clsMinishop->is_common_cart),
-                "TEXT"=>$TEXT,
+        $clsMinishop->render('frontend_product_list.twig', array_merge([
                 "order_by"=>$order_by,
                 "prods"=>$prods,
-        ]);
+        ]), $common_array);
 }
 ?>
