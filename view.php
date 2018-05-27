@@ -25,9 +25,9 @@
 if(!defined('WB_PATH')) die(header('Location: index.php'));  
 
 if(!file_exists(WB_PATH .'/modules/wbs_minishop/languages/' .LANGUAGE .'.php')) {
-	require_once(WB_PATH .'/modules/wbs_minishop/languages/EN.php');
+        require_once(WB_PATH .'/modules/wbs_minishop/languages/EN.php');
 } else {
-		require_once(WB_PATH .'/modules/wbs_minishop/languages/' .LANGUAGE .'.php');
+                require_once(WB_PATH .'/modules/wbs_minishop/languages/' .LANGUAGE .'.php');
 }
 
 if (!class_exists("ModMinishop")) include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
@@ -37,68 +37,33 @@ $clsMinishop = new ModMinishop($page_id, $section_id);
 
 $minishop_settings = $clsMinishop->get_settings();
 
-$loader = new Twig_Loader_Array(array(
-    'block_html' => $minishop_settings['block_html'],
-));
-$twig = new Twig_Environment($loader);
+$clsMinishop->add_loader('array', [
+        'block_html' => $minishop_settings['block_html']
+]);
 
 $order_by = isset($_GET['sorted_by']) ? $_GET['sorted_by'] : 'prod_title';
 if ($order_by == 'name') $order_by = 'prod_title';
 else if ($order_by == 'price') $order_by = 'prod_price';
 else $order_by = 'prod_title';
-?>
 
+if (function_exists('wbs_core_include')) {
+        ob_start(); 
+        wbs_core_include(['functions.js', 'windows.js', 'windows.css']);
+        $incl = ob_get_contents();
+    ob_end_clean();
+} else {$incl = "";}
 
-<script src="<?=WB_URL?>/modules/wbs_minishop/frontend2.js"></script> <!-- Только для одностраничника!!! -->
-<link href="<?=WB_URL?>/modules/wbs_minishop/frontend.css" rel="stylesheet"> <!-- Только для одностраничника!!! -->
-
-<style> <?=$minishop_settings['block_css']?> </style>
-<style>
-    <?php echo $minishop_settings['window_css']; ?>
-</style>
-
-<?php if(function_exists('wbs_core_include')) wbs_core_include(['functions.js', 'windows.js', 'windows.css']); ?>
-
-<script>
-    var section_id = <?php echo $section_id; ?>;
-    var page_id = <?=PAGE_ID?>;
-    var is_common_cart = <? echo json_encode($clsMinishop->is_common_cart); ?>;
-
-    "use strict";
-    
-    mod_minishop = new mod_minishop_Main(section_id, page_id);
-</script>
-
-<?php $clsMinishop->print_cart_btn(); ?>
-
-<?php
-if ($minishop_settings['need_registration'] === '1') {
-	?>
-	
-	<input type="button" value="Мои заказы" onclick="mod_minishop.order_show_list();">
-	
-	<?php
-}
-?>
-
-<div style='float:right;'>
-    <?php echo $TEXT['SORTED_BY']; ?>
-    <select onchange='window.location.search = "?sorted_by=" + this.value;'>
-        <option value="name"  <?php if($order_by=='prod_name') echo 'selected'; ?>><?php echo $TEXT['SORTED_BY_TITLE']; ?></option>
-        <option value="price" <?php if($order_by=='prod_price') echo 'selected'; ?>><?php echo $TEXT['SORTED_BY_PRICE']; ?></option>
-    </select>
-</div><br>
-
-<div class="view_products"> <?php
+// Вынимаем товары
 
 $sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_products` WHERE ";
 $sql .= "`section_id`=$section_id AND ";
 $sql .= "`is_copy_for`=0 AND ";
 //$sql .= '`page_id`='.$page_id.' AND ';
 $sql .= "`prod_is_active`='1' ORDER BY `prod_category_id`, `$order_by`";
-$products = $database->query($sql);
+$r = $database->query($sql);
 $current_category_id = '';
-while($product = $products->fetchRow()) {
+$prods = [];
+while($r !== null && $product = $r->fetchRow()) {
 
     $category_id = $product['prod_category_id'];
     $count = $product['prod_count'];
@@ -107,10 +72,18 @@ while($product = $products->fetchRow()) {
         if (isset($category_array[$category_id])) echo "<h2>".$category_array[$category_id]."</h2>";
         $current_category_id = $category_id;
     }
+    
+    $prods[] = $clsMinishop->get_product_vars($product);
+}
 
-    $tile = $twig->render('block_html', $clsMinishop->get_product_vars($product));
-    echo $clsMinishop->wrap_product_tile($tile, $product);
-} ?>
-</div>
-
-<script src="<?=WB_URL?>/modules/wbs_minishop/frontend_after.js" defer></script>
+$clsMinishop->render('frontend_product_list.twig', [
+        "settings"=>$minishop_settings,
+        "includes"=>$incl,
+        "section_id"=>$section_id,
+        "page_id"=>PAGE_ID,
+        "is_common_cart"=>json_encode($clsMinishop->is_common_cart),
+        "TEXT"=>$TEXT,
+        "order_by"=>$order_by,
+        "prods"=>$prods,
+]);
+?>
