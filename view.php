@@ -113,6 +113,6 @@ if (isset($prod_id)) {
         $clsMinishop->render('frontend_product_list.twig', array_merge([
                 "order_by"=>$order_by,
                 "prods"=>$prods,
-        ]), $common_array);
+        ], $common_array));
 }
 ?>
