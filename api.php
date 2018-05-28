@@ -551,6 +551,10 @@ if ($action == 'content_confirm_order') {
 
     if ($_POST['has_delivery']=='true') {$has_delivery = '1';} else {$has_delivery = '0';}
     if ($_POST['has_self_delivery']=='true') {$has_self_delivery = '1';} else {$has_self_delivery = '0';}
+
+    if ($_POST['show_code_id']=='true') {$show_code_id = '1';} else {$show_code_id = '0';}
+    if ($_POST['show_code_vendor']=='true') {$show_code_vendor = '1';} else {$show_code_vendor = '0';}
+    
     $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
     $sql .= '`admin_email`="'          .$database->escapeString($_POST['admin_email'])          .'", ';
     $sql .= '`admin_login`="'          .$database->escapeString($_POST['admin_login'])          .'", ';
@@ -561,6 +565,9 @@ if ($action == 'content_confirm_order') {
     $sql .= '`has_delivery`="'         .$database->escapeString($has_delivery)                  .'", ';
     $sql .= '`window_html`="'          .$database->escapeString($_POST['window_html'])          .'", ';
     $sql .= '`need_registration`="'          .$database->escapeString($_POST['need_registration'])  .'", ';
+    $sql .= '`show_code_id`="'         .$show_code_id  .'", ';
+    $sql .= '`show_code_vendor`="'     .$show_code_vendor  .'", ';
+    
     if ($minishop_settings['is_general_settings'] == 0) { $sql .= '`is_general_settings`="'  .$database->escapeString($_POST['is_general_settings'])  .'",  '; }
     $sql .= '`window_css`="'           .$database->escapeString($_POST['window_css'])           .'" ';
     $sql .= ' WHERE `section_id`='.$_section_id.' AND `page_id`='.$_page_id;
@@ -577,48 +584,49 @@ if ($action == 'content_confirm_order') {
 
 } else if ($action == 'update_product') {
 	
-        /* `is_copy_for`=0 необходимо, чтобы не позволить изменить данные копии товара, заказанного пользователем.
-        */
-        
-    require(WB_PATH.'/modules/admin.php');
-        
-    $prod_id = $admin->get_post('prod_id');
-    if ($admin->get_post('prod_is_active')==='true') {$is_active = '1';} else {$is_active = '0';}
-    $prod_title = $admin->get_post('prod_title');
-
-    // вынимаем товар из базы
-    
-    $r = select_row('`'.TABLE_PREFIX.'mod_wbs_minishop_products`', '`prod_title`', "`prod_id`=".process_value($prod_id)." AND `is_copy_for`=0");
-    if (gettype($r) === 'string') print_error($r);
-    if ($r === null) print_error('Товар не найден!');
-    $prod = $r->fetchRow();
-
-    // формируем ссылку
-
-    list($is_error, $prod_link) = createAccessFile($prod_id, $prod_title, $prod['prod_title'], $page_id, $section_id, $clsMinishop->name);
-    if ($is_error) {
-         print_error($prod_link);
-    }
-
-    // обновляем
-    
-    $fields = [
-        'prod_category_id' => $admin->get_post('prod_category_id'),
-        'prod_title' => $prod_title,
-        'prod_shortdesc' => $admin->get_post('prod_shortdesc'),
-        'prod_desc' => $admin->get_post('prod_desc'),
-        'prod_price' => (float)$admin->get_post('prod_price') * 100,
-        'prod_is_active' => $is_active,
-        'prod_count' => $admin->get_post('prod_count'),
-        'prop_value_ids'=>json_encode($_POST['prop_value']),
-        'prod_is_hit' => $admin->get_post('prod_is_hit'),
-        'prod_link'=> $prod_link,
-        ];
-
-    $forupdate = glue_fields($fields, ',');
-
-    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.$database->escapeString($section_id).'" AND `prod_id`="'.$database->escapeString($prod_id).' AND `is_copy_for`=0"';
-    if ($database->query($sql)) { print_success("Товар обновлён!"); }
+        /* `is_copy_for`=0 необходимо, чтобы не позволить изменить данные копии товара, заказанного пользователем.
+        */
+
+    require(WB_PATH.'/modules/admin.php');
+
+    $prod_id = $admin->get_post('prod_id');
+    if ($admin->get_post('prod_is_active')==='true') {$is_active = '1';} else {$is_active = '0';}
+    $prod_title = $admin->get_post('prod_title');
+
+    // вынимаем товар из базы
+
+    $r = select_row('`'.TABLE_PREFIX.'mod_wbs_minishop_products`', '`prod_title`', "`prod_id`=".process_value($prod_id)." AND `is_copy_for`=0");
+    if (gettype($r) === 'string') print_error($r);
+    if ($r === null) print_error('Товар не найден!');
+    $prod = $r->fetchRow();
+
+    // формируем ссылку
+
+    list($is_error, $prod_link) = createAccessFile($prod_id, $prod_title, $prod['prod_title'], $page_id, $section_id, $clsMinishop->name);
+    if ($is_error) {
+         print_error($prod_link);
+    }
+
+    // обновляем
+
+    $fields = [
+        'prod_category_id' => $admin->get_post('prod_category_id'),
+        'prod_title' => $prod_title,
+        'prod_shortdesc' => $admin->get_post('prod_shortdesc'),
+        'prod_desc' => $admin->get_post('prod_desc'),
+        'prod_price' => (float)$admin->get_post('prod_price') * 100,
+        'prod_is_active' => $is_active,
+        'prod_count' => $admin->get_post('prod_count'),
+        'prop_value_ids'=>json_encode($_POST['prop_value']),
+        'prod_is_hit' => $admin->get_post('prod_is_hit'),
+        'prod_link'=> $prod_link,
+        'prod_vendor_code' => $admin->get_post('prod_vendor_code'),
+        ];
+
+    $forupdate = glue_fields($fields, ',');
+
+    $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_products` SET '.$forupdate.'  WHERE `section_id`="'.$database->escapeString($section_id).'" AND `prod_id`="'.$database->escapeString($prod_id).' AND `is_copy_for`=0"';
+    if ($database->query($sql)) { print_success("Товар обновлён!"); }
     else print_error($database->get_error());
 
 } else if ($action == 'content_form_product') {

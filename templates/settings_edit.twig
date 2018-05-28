@@ -21,6 +21,10 @@
     Самовывоз: <input type="checkbox" {% if settings.has_self_delivery == '1' %} checked {% endif %} name="has_self_delivery">
     Адрес самовывоза: <input type="text" name="address_self_delivery" value="{{ settings.address_self_delivery }}">
 
+    <br><span class="minishop_title_2">Отображать уникальные коды товара</span>
+    <label><input type='checkbox' name='show_code_id'     {% if settings.show_code_id == 1 %} checked {% endif %}>Идентификатор</label><br>
+    <label><input type='checkbox' name='show_code_vendor' {% if settings.show_code_vendor == 1 %} checked {% endif %}>Артикул</label>
+    
     <br><span class="minishop_title_2">Форма заказа</span>
     <label><input type='radio' name='need_registration' value='1' {% if settings.need_registration == '1' %} checked {% endif %}>Заказ (пользователь должен быть зарегистрирован)</label><br>
     <label><input type='radio' name='need_registration' value='0' {% if settings.need_registration == '0' %} checked {% endif %}>Заявка (регистрация не требуется, отсутвует оплата, данные заказа хранятся в браузере пользователя)</label>
