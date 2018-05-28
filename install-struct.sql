@@ -12,7 +12,8 @@ CREATE TABLE  `{TABLE_PREFIX}mod_wbs_minishop_settings` (
     `window_html` TEXT,
     `window_css` TEXT,
     `need_registration` INT NOT NULL DEFAULT 0,
-    `is_general_settings` INT(11) NOT NULL DEFAULT '0'
+    `is_general_settings` INT(11) NOT NULL DEFAULT '0',
+    `show_code` INT NOT NULL DEFAULT 2
 ){TABLE_ENGINE=MyISAM};
         
 DROP TABLE IF EXISTS `{TABLE_PREFIX}mod_wbs_minishop_products`;
@@ -31,6 +32,7 @@ CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_products` (
     `prod_is_hit` INT(11),
     `is_copy_for` INT(11) NOT NULL DEFAULT '0',
     `prod_link` VARCHAR(255) NOT NULL,
+    `prod_vendor_code` VARCHAR(255) NOT NULL DEFAULT '',
     PRIMARY KEY (prod_id)
 ){TABLE_ENGINE=MyISAM};
 

@@ -92,7 +92,9 @@ class ModMinishop extends Addon {
         </div>
 
         <span class='product_description'>{{PROD_DESCR|raw }}</span>
-        <br><br>Цена: <span class='product_full_price'><span class='product_price'>{{PROD_PRICE}}</span> s<span class='currency'>{{CURRENCY}}</span></span><br>
+        <br><br>Цена: <span class='product_full_price'><span class='product_price'>{{PROD_PRICE}}</span> <span class='currency'>{{CURRENCY}}</span></span><br>
+        Артикул: {{ PROD_VENDOR_CODE }} <br>
+        Идентификатор: {{ PROD_ID }} <br>
         <span class='count2cart_form'>
 
             {% if PROD_PROPS|length > 0 %} <br> {% endif %}
@@ -295,7 +297,8 @@ for (photo of photos) {
             "PROD_PROPS"          =>  $props,
             'PROD_PHOTOS'         =>  $photos,
             'PROD_IS_HIT'         =>  $arrProduct['prod_is_hit'],
-            'PROD_URL'            => page_link($arrProduct['prod_link']),
+            'PROD_URL'            =>  page_link($arrProduct['prod_link']),
+            'PROD_VENDOR_CODE'    =>  $arrProduct['prod_vendor_code'],
             ];
     }
     

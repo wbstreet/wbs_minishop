@@ -28,6 +28,10 @@
        <td> <input name="prod_count" type="number" value="{{ product.prod_count }}" ></td>
     </tr>
     <tr>
+       <td> Артикул:</td>
+       <td> <input name="prod_vendor_code" type="text" value="{{ product.prod_vendor_code }}" ></td>
+    </tr>
+    <tr>
         <td></td>
         <td><input name="prod_is_active" {% if product.prod_is_active == '1' %} checked {% endif %} type="checkbox"> Активный</td>
     </tr>
