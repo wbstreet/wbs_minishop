@@ -93,8 +93,8 @@ class ModMinishop extends Addon {
 
         <span class='product_description'>{{PROD_DESCR|raw }}</span>
         <br><br>Цена: <span class='product_full_price'><span class='product_price'>{{PROD_PRICE}}</span> <span class='currency'>{{CURRENCY}}</span></span><br>
-        Артикул: {{ PROD_VENDOR_CODE }} <br>
-        Идентификатор: {{ PROD_ID }} <br>
+        {% if settings.show_code_vendor == 1 %} Артикул: {{ PROD_VENDOR_CODE }} <br> {% endif %}
+        {% if settings.show_code_id == 1 %} Идентификатор: {{ PROD_ID }} <br> {% endif %}
         <span class='count2cart_form'>
 
             {% if PROD_PROPS|length > 0 %} <br> {% endif %}

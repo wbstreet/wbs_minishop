@@ -26,9 +26,9 @@
 <div class='product' id='product{{ PROD_ID }}' data-prod_id='{{ PROD_ID }}' data-section_id='{{ section_id }}' data-page_id='{{ page_id }}'>
     <div style="text-align:right">
         {{ PROD_SHORT_DESCR }} <br>
-        Цена: {{ PROD_PRICE }} {{ CURRENCY }} <br>
-        Артикул: {{ PROD_VENDOR_CODE }} <br>
-        Идентификатор: {{ PROD_ID }}
+        Цена: {{ PROD_PRICE }} {{ CURRENCY }}
+        {% if settings.show_code_vendor == 1 %} <br> Артикул: {{ PROD_VENDOR_CODE }} {% endif %}
+        {% if settings.show_code_id == 1 %}  <br> Идентификатор: {{ PROD_ID }} {% endif %}
     </div>
 
     <br>

@@ -427,7 +427,7 @@ if ($action == 'content_confirm_order') {
         'block_html' => $minishop_settings['window_html'],
     ]);
 
-    $array_vars = array_merge($clsMinishop->get_product_vars($product), ['section_id'=>$section_id,'page_id'=>$page_id]);
+    $array_vars = array_merge($clsMinishop->get_product_vars($product), ['section_id'=>$section_id,'page_id'=>$page_id, 'settings'=>$minishop_settings]);
     print_success($clsMinishop->render('frontend_product_wrap.twig', $array_vars, true), ['title'=>$product['prod_title']]);
 
 
