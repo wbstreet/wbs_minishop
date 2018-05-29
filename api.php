@@ -84,8 +84,17 @@ if ($action == 'content_confirm_order') {
 
     	$phone = $clsFilter->f('phone', [['1', "Вы не указали Ваш номер телефона!"]], 'append', '');
 	    $delivery = $clsFilter->f('delivery', [['variants', "Не указан способ доставки!", ["self", "deliv"]]], 'append', '');
-	    if ($delivery=='deliv') $delivery_address = $clsFilter->f('delivery_address', [['1', "Не указан адрес доставки"]], 'append', '');
-    	else $delivery_address = "";
+            if ($delivery=='deliv') {
+                $delivery_address = [
+                        'country'    => 'Россия',/*$clsFilter->f('delivery_addr_country', [['1', "Не указана страна"]],              'append', ''),*/
+                        'region'     => $clsFilter->f('delivery_addr_region', [['1', "Не указан регион"]], '               append', ''),
+                        'settlement' => $clsFilter->f('delivery_addr_settleement', [['1', "Не указан населённый пункт"]], 'append', ''),
+                        'street'     => $clsFilter->f('delivery_addr_street', [['1', "Не указана улица"]],                'append', ''),
+                        'building'   => $clsFilter->f('delivery_addr_building', [['1', "Не указан номер дома"]],          'append', ''),
+                        'sector'     => $clsFilter->f('delivery_addr_sector', [['1', "Не указан корпус"]],                'default', ''),
+                        'flat'       => $clsFilter->f('delivery_addr_flat', [['1', "Не указана квартира"]],               'default', ''),
+                ];
+            } else $delivery_address = "";
 
 		if ($clsFilter->is_error()) $clsFilter->print_error();
 	
