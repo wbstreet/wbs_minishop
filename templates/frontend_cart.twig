@@ -29,7 +29,7 @@
 	<span>Итоговая стоимость: <span id="total_price">{{ total_price }}</span></span> <br>
 	<br>
 
-	<input id="mod_minishop_open_order_from" type="button" value="Оформить заказ" onclick="$('#mod_minishop_order_form').fadeToggle(); this.style.display='none';">
+	<input id="mod_minishop_open_order_from" type="button" value="Оформить заказ" onclick="$('#mod_minishop_order_form').fadeToggle(); this.style.display='none'; W.calc_position(this, 'center')">
 	<br>
 	
 	<form id="mod_minishop_order_form" style="display:none;">
@@ -91,7 +91,7 @@
         </fieldset>
 
 		<input type="button" value="Подтвердить" onclick="mod_minishop.order_confirm(this);">
-		<input type="button" value="Отменить" onclick="$('#mod_minishop_order_form').fadeToggle(); $('#mod_minishop_open_order_from').css({display:''});">
+		<input type="button" value="Отменить" onclick="$('#mod_minishop_order_form').css({display:'none'}); $('#mod_minishop_open_order_from').css({display:''}); W.calc_position(this, 'center')">
 	</form>
 
 </div>
