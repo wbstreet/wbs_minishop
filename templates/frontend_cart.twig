@@ -56,7 +56,16 @@
 
             <div id="delivery_data" style="display:none;">
             	{% if settings.has_delivery == 1 %}
-             		<span>Куда доставить заказ? <input type="text" name="delivery_address"></span>
+                        <span>Адрес, куда доставить товар: </span>
+                        <br>
+                        Страна: <select name="delivery_addr_country">
+                                <option selected>Россия</option>
+                        </select> Регион: <input type="text" name="delivery_addr_region">
+                        <br>
+                        Населённый пункт: <input type="text" name="delivery_addr_settleement"> Улица: <input type="text" name="delivery_addr_street">
+                        <br>
+                        Дом: <input type="text" size="4" name="delivery_addr_building"> Корпус: <input type="text" name="delivery_addr_sector" size="4">
+                        Квартира/офис: <input type="text" size="4" name="delivery_addr_flat">
             	{% else %}
              		Доставка недоступна. Приносим свои извинения.
          		{% endif %}
