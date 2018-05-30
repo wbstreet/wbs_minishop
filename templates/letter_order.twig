@@ -15,13 +15,9 @@
 		<th width="60">Цена за 1 ед.</th>
 		<th width="70">Цена * Кол-во</th>
     </tr>
-    
     {% set summ_price = 0 %}
-    
     {% for prod in prods %}
-
        {% set total_price = prod.count_to_order * prod.prod_price %}
-    
        	<tr>
 	        <td> {{ loop.index }} </td>
 	        <td> {{ prod.prod_id }} </td>
@@ -30,13 +26,22 @@
 	        <td> {{ prod.prod_price }} </td>
 	        <td> {{ total_price }} </td>
     	</tr>
-    	
     	{% set summ_price = summ_price + total_price %}
-    
     {% endfor %}
-    
 </table>
 
 <br> Итоговая сумма оплаты за заказ: {{ summ_price }}
 <br> Способ доставки: <b>{{ delivery }}</b>
-{% if delivery_address != '' %} <br> Адрес для доставки: <b>{{ delivery_address }}</b> {% endif %}
+<br> Способ доставки: <b>{{ delivery }}</b>
+{% if delivery_address != '' %}
+    <br> Адрес для доставки
+    <br>Страна: <b>{{ delivery_address.country }}</b>
+    <br>Регион: <b>{{ delivery_address.region }}</b>
+    <br>Населённый пункт: <b>{{ delivery_address.settlement }}</b>
+    <br>Улица: <b>{{ delivery_address.street }}</b>
+    <br>Дом: <b>{{ delivery_address.building }}</b>
+    <br>Корпус: <b>{{ delivery_address.sector }}</b>
+    <br>Квартира: <b>{{ delivery_address.flat }}</b>
+{% endif %}
+
+Конец.

@@ -30,9 +30,9 @@
     <label><input type='radio' name='need_registration' value='0' {% if settings.need_registration == '0' %} checked {% endif %}>Заявка (регистрация не требуется, отсутвует оплата, данные заказа хранятся в браузере пользователя)</label>
 
     <br><span class="minishop_title_2">Область действия настроек</span>
-    <label><input type='radio' name='is_general_settings' value='2' {% if settings.is_general_settings == '2' %} checked {% endif %}>На всём сайте</label>
+    <label><input type='radio' name='is_general_settings' value='2' {% if settings.is_general_settings == '2' %} checked {% endif %}>На всём сайте (единые настройки для всего сайта)</label> <br>
     <!--<label><input type='radio' name='is_general_settings' value='1' {% if settings.is_general_settings == '1' %} checked  {% endif %}>На всей странице</label>-->
-    <label><input type='radio' name='is_general_settings' value='0' {% if settings.is_general_settings == '0' %} checked {% endif %}>На секции</label>
+    <label><input type='radio' name='is_general_settings' value='0' {% if settings.is_general_settings == '0' %} checked {% endif %}>На секции (если магазины на странице будут принадлежать разным пользователям. Вы не сможете исполльзовать корзину на страницах, где магазин отсутствует.)</label>
 
     <br><br>
     <input type="button" value="Сохранить" onclick="sendform(this, 'save_settings_edit', {url:mod_minishop.url_api})">

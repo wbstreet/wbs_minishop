@@ -202,7 +202,7 @@ class mod_minishop_Main {
         var w = W.open_by_api('get_cart_list', {
         	add_sheet:  true,
         	max_count: 1,
-        	data:       {products: JSON.stringify(this.cart.get_all())},
+                data:       {products: JSON.stringify(this.cart.get_all()), section_id:section_id, page_id:page_id},
         	url:        this.url_api
         });
     }
@@ -294,7 +294,8 @@ class mod_minishop_Main {
 
                 sendform(btn, 'content_confirm_order', {
                         data:{
-                                products: JSON.stringify(prod_objs)
+                            products: JSON.stringify(prod_objs),
+                         section_id:section_id, page_id:page_id
                         },
                         arg_func_success: [prod_objs, this],
                         func_success: function(res, arg) {
