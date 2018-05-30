@@ -297,7 +297,7 @@ for (photo of photos) {
             "PROD_PROPS"          =>  $props,
             'PROD_PHOTOS'         =>  $photos,
             'PROD_IS_HIT'         =>  $arrProduct['prod_is_hit'],
-            'PROD_URL'            =>  page_link($arrProduct['prod_link']),
+            'PROD_URL'            =>  WB_URL.PAGES_DIRECTORY.$arrProduct['prod_link'].PAGE_EXTENSION,
             'PROD_VENDOR_CODE'    =>  $arrProduct['prod_vendor_code'],
             ];
     }
