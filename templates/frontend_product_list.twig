@@ -1,9 +1,9 @@
 <script src="{{ WB_URL }}/modules/wbs_minishop/frontend2.js"></script> <!-- Только для одностраничника!!! -->
 <link href="{{ WB_URL }}/modules/wbs_minishop/frontend.css" rel="stylesheet"> <!-- Только для одностраничника!!! -->
 
-<style>{{ settings.block_css }} </style>
+<style>{{ settings.block_css|raw }} </style>
 
-<style> {{ settings.window_css }} </style>
+<style> {{ settings.window_css|raw }} </style>
 {{ includes|raw }}
 
 <script>
@@ -22,12 +22,14 @@
         <input type="button" value="Мои заказы" onclick="mod_minishop.order_show_list();">
 {% endif %}
 
-<div style='float:right;'>
-    {{ TEXT.SORTED_BY }}
-    <select onchange='window.location.search = "?sorted_by=" + this.value;'>
+<div class="select-button"  style='float:right;'>
+    <select class="select-button__select" onchange='window.location.search = "?sorted_by=" + this.value;'>
         <option value="name"  {% if order_by == 'prod_name'  %} selected {% endif %}> {{ TEXT.SORTED_BY_TITLE }}</option>
         <option value="price" {% if order_by == 'prod_price' %} selected {% endif %}> {{ TEXT.SORTED_BY_PRICE }}</option>
     </select>
+    <button tabindex="-1" class="select-button__button sbutton">
+       {{ TEXT.SORTED_BY }}
+    </button>
 </div><br>
 
 <div class="view_products"> 

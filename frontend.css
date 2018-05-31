@@ -16,7 +16,6 @@
 #button_hide_menu_data {display: none;}
 .minishop_button_menu {display:inline-block; background: #334C90; cursor:pointer;color: #fff; font-size: 13pt; text-align:center; padding: 10px 5px 10px 5px;}
 
-.button_add2cart {display:inline-block; width:90%; background: #d89a00; cursor:pointer;color: #fff;}
 .product_count2cart {width: 50px;}
 
 .button_delete_prod_from_cart {
@@ -26,4 +25,57 @@
 
 .prod_count_cart_list input{
     width:80px;
+}
+
+/* button */
+.select-button {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    display: inline-block;
+}
+.select-button__select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    rigth: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    opacity: 0;
+    z-index: 2;
+}
+.sbutton {
+    width: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0 15px;
+    border: 1px solid #869aff;
+    margin: 0;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 32px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-appearance: none;
+    border-radius: 0;
+    -webkit-transition-property: background-color,color,-webkit-box-shadow;
+    transition-property: background-color,color,box-shadow;
+    background-color: transparent;
+    color: #fff;
+    background-color: #28367a !important;
+    text-align: center;
 }

@@ -50,10 +50,8 @@ class ModMinishop extends Addon {
         <span class='product_full_price'><span class='product_price'>{{PROD_PRICE}}</span> <span class='currency'>{{CURRENCY}}</span></span><br>
         <img class='product_main_pic' src='{{PROD_MAIN_IMG_SRC}}' {{ONCLICK_OPEN_WINDOW|raw}}><br>
         <span class='product_short_description'>{{PROD_SHORT_DESCR}}</span>
-        <span class='button_add2cart' onclick='mod_minishop.cart_show_form(this)'>В корзину</span>
         <span class='count2cart_form'>
-            <input class='product_count2cart' type='number' value=''> <br>
-            <input class='button_add2cart2' type='button' value='Добавить' onclick='mod_minishop.cart_add(this)'>
+            <input class='product_count2cart' type='number' value='1'><input class='button_add2cart2' type='button' value='В корзину' onclick='mod_minishop.cart_add(this)'>
         </span>
 
         {% if  PROD_IS_HIT == 1 %}
@@ -69,7 +67,10 @@ class ModMinishop extends Addon {
         .view_products .product .product_main_pic {width: 90%; height: auto; cursor:pointer;}
         .view_products .product .product_full_price {font-size: 120%;}
         .view_products .product .product_short_description {color: #000; display:block;}
-        .view_products .product .count2cart_form {display: none;}
+        .view_products .product .count2cart_form {margin: 5px;}
+        .view_products .product .count2cart_form input[type=\"number\"] {padding: 2px 4px 2px 4px;margin: 0;background: rgba(0,0,0,0.1);border: 0;background: rgba(216, 154, 0, 0.9);border-radius: 5px 0 0 5px; color: #ffffff;}
+        .view_products .product .count2cart_form input[type=\"button\"] {padding: 2px 4px 2px 4px; margin: 0; background: rgb(216, 154, 1); border: 0; border-radius: 0 5px 5px 0;color: #ffffff;}
+        .view_products .product .count2cart_form input[type=\"button\"]:hover {background: rgba(216, 154, 0, 0.9);}
         .view_products .product .product_hit {position:absolute;top:-10px;right:-10px;transform: rotate(-30deg);text-align:center; color:#dd2222;}
         
         .windowBody {font-size:10pt;}

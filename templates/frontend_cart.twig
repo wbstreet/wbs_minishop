@@ -17,7 +17,7 @@
         <td>{{ prod.prod_title }}</td>
         <td>{{ prod.prod_price }}</td>
         <td class="prod_count_cart_list"><input onchange="mod_minishop.cart.add({{ prod.prod_id }}, this.value); mod_minishop.cart_show_list()" type="number" value="{{ prod.cart_count }}"></td>
-        <td class="button_delete_prod_from_cart" onclick="mod_minishop.cart.remove({{ prod.prod_id }}); mod_minishop_set_count_products(); mod_minishop.cart_show_list(); ">X</td>
+        <td class="button_delete_prod_from_cart" onclick="mod_minishop.cart.remove({{ prod.prod_id }}); mod_minishop_set_count_products(); W.close(this); mod_minishop.cart_show_list(); ">X</td>
     </tr>
     
     {% set total_price = total_price + (prod.prod_price * prod.cart_count) %}

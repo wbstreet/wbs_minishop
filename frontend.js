@@ -5,8 +5,6 @@ License: public domain :)
 
 */
 
-mod_minishop_current_prodform = null;
-
 function mod_minishop_isHasFavourite(org_id) {
         return localStorage.hasOwnProperty(org_id);
 }
@@ -66,11 +64,6 @@ function mod_minishop_set_count_products() {
     for (let el of els) { el.textContent = count; }
 }
 
-function mod_minishop_hide_form_product2cart(prod_id) {
-    var prod_div = document.getElementById("product"+prod_id);
-    if(prod_div !== null) prod_div.getElementsByClassName("count2cart_form")[0].style.display='none';
-}
-
 function mod_minishop_create_order(prod_objs, user_data) {
     if (localStorage.hasOwnProperty('current_order_id')) var order_id = Number(localStorage.getItem('current_order_id'))+1
     else var order_id = 1
@@ -122,7 +115,6 @@ class mod_minishop_Main {
                 this.url_api = this.url_mod + 'api.php';
                 
                 this.cart_add = this.cart_add.bind(this);
-                this.cart_show_form = this.cart_show_form.bind(this);
                 this.cart_show_list = this.cart_show_list.bind(this);
                 this.cart_recount_list = this.cart_recount_list.bind(this);
                 this.order_confirm = this.order_confirm.bind(this);
@@ -163,27 +155,8 @@ class mod_minishop_Main {
         return prod;
     }
 
-    cart_show_form(btn) {
-        let prod = this.get_prod_data(btn);
-
-        let span =  prod.tile.querySelector(".count2cart_form");
-        if (mod_minishop_current_prodform !== null) mod_minishop_hide_form_product2cart(mod_minishop_current_prodform);
-        if (mod_minishop_current_prodform == prod.prod_id) {mod_minishop_current_prodform = null; return;}
-
-        if (getComputedStyle(span).display=='none') {
-            console.log(prod);
-            span.style.display = 'block';
-            span.querySelector('.product_count2cart').value = prod.count_in_cart;
-        }
-
-        mod_minishop_current_prodform = prod.prod_id;
-    }
-    
     cart_add(btn) {
-        console.log(btn);
         let prod = this.get_prod_data(btn);
-        console.log(prod);
-
         prod.count_to_cart = Number(prod.count_to_cart);
             if (prod.count_to_cart <= 0) {
                 this.cart.remove(prod.prod_id);
@@ -195,7 +168,6 @@ class mod_minishop_Main {
 
         //mod_minishop_show_menu_cart(); 
         mod_minishop_set_count_products();
-        mod_minishop_hide_form_product2cart(prod.prod_id);
     }
 
     cart_show_list() {
