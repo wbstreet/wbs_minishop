@@ -417,7 +417,7 @@ if ($action == 'content_confirm_order') {
 } else if ($action == 'window_product_info') {
 
         
-        $product_id = $clsFilter->f('product_id', [['integer']], 'fatal');
+        $product_id = $clsFilter->f('product_id', [['integer', 'Не указан идентификатор товара!']], 'fatal');
         
         // извлекаем данные о товаре
     
