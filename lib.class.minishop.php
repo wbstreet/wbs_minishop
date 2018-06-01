@@ -40,6 +40,11 @@ class ModMinishop extends Addon {
         $database->query("DROP TABLE ".$this->tbl_photos);
         $database->query("DROP TABLE ".$this->tbl_prop);
         $database->query("DROP TABLE ".$this->tbl_prop_values);
+        $database->query("DROP TABLE ".$this->tbl_order);
+        $database->query("DROP TABLE ".$this->tbl_order_prods);
+        
+        rm_full_dir(WB_PATH.PAGES_DIRECTORY.'/'.$this->name);
+        rm_full_dir(WB_PATH.MEDIA_DIRECTORY.'/mod_'.$this->name);
     }
 
     function add() {
