@@ -26,9 +26,18 @@ class ModMinishop extends Addon {
     }
     
     function install() {
+        global $clsEmail;
+        $r = $clsEmail->create_template(
+            ($this->name)."_order",
+            "Заказ из магазина {{url}}",
+            file_get_contents(__DIR__."/templates/letter_order.twig")
+        );
+        return $r;
     }
 
     function uninstall() {
+        global $clsEmail, $database;
+    
         // delete all database search table entries made by this module
         $database->query("DELETE FROM `" .TABLE_PREFIX ."search` WHERE `name` = 'module' AND `value` = 'minishop'");
         $database->query("DELETE FROM `" .TABLE_PREFIX ."search` WHERE `extra` = 'minishop'");
@@ -45,6 +54,9 @@ class ModMinishop extends Addon {
         
         rm_full_dir(WB_PATH.PAGES_DIRECTORY.'/'.$this->name);
         rm_full_dir(WB_PATH.MEDIA_DIRECTORY.'/mod_'.$this->name);
+        
+        $r = $clsEmail->delete_template(($this->name)."_order");
+        return $r;
     }
 
     function add() {

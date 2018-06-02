@@ -85,6 +85,7 @@ if ($action == 'content_confirm_order') {
     	$phone = $clsFilter->f('phone', [['1', "Вы не указали Ваш номер телефона!"]], 'append', '');
 	    $delivery = $clsFilter->f('delivery', [['variants', "Не указан способ доставки!", ["self", "deliv"]]], 'append', '');
             if ($delivery=='deliv') {
+                if ($minishop_settings['has_delivery'] == '0') print_error("Доставка недоступна!");
                 $delivery_address = [
                         'country'    => 'Россия',/*$clsFilter->f('delivery_addr_country', [['1', "Не указана страна"]],              'append', ''),*/
                         'region'     => $clsFilter->f('delivery_addr_region', [['1', "Не указан регион"]], '               append', ''),
@@ -94,7 +95,10 @@ if ($action == 'content_confirm_order') {
                         'sector'     => $clsFilter->f('delivery_addr_sector', [['1', "Не указан корпус"]],                'default', ''),
                         'flat'       => $clsFilter->f('delivery_addr_flat', [['1', "Не указана квартира"]],               'default', ''),
                 ];
-            } else $delivery_address = "";
+            } else {
+                if ($minishop_settings['has_self_delivery'] == '0') print_error("Самовывоз недоступен!");
+                $delivery_address = "";
+            }
 
 		if ($clsFilter->is_error()) $clsFilter->print_error();
 	
@@ -121,7 +125,7 @@ if ($action == 'content_confirm_order') {
 	
 	    // отправка письма
 	
-	    $body = $clsMinishop->render('letter_order.twig', [
+	    /*$body = $clsMinishop->render('letter_order.twig', [
 	    	'fio'=>$fio,
 	    	'phone'=>$phone,
 	    	'prods'=>$prods,
@@ -140,7 +144,24 @@ if ($action == 'content_confirm_order') {
 	
 	        0, false
 	
-	    );
+	    );*/
+	    
+            $vars = [
+                'fio'=>$fio,
+                'phone'=>$phone,
+                'prods'=>$prods,
+                'comment'=>$comment,
+                'delivery'=>$delivery,
+                'delivery_address'=>$delivery_address,
+                'url'=>$url
+            ];
+
+        
+            $r = $clsEmail->send_template(
+                $minishop_settings['admin_email'],
+                $clsMinishop->name."_order",
+                $vars
+            );
 	
 	    if ($r[0] !== true) print_error('Письмо не отправлено! ');
 	    

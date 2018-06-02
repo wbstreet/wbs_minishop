@@ -13,7 +13,7 @@
  // prevent this file from being accessed directly
 if(!defined('WB_PATH')) die(header('Location: index.php'));  
 
-include(__DIR__.'/lib.class.minisho.php');
+include(__DIR__.'/lib.class.minishop.php');
 $clsModMinishop = new ModMinishop(null, null);
 $r = $clsModMinishop->uninstall();
 if (gettype($r) === 'string') {
