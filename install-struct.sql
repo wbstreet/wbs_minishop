@@ -33,8 +33,7 @@ CREATE TABLE `{TABLE_PREFIX}mod_wbs_minishop_products` (
     `prod_is_hit` INT(11),
     `is_copy_for` INT(11) NOT NULL DEFAULT '0',
     `prod_link` VARCHAR(255) NOT NULL,
-    `show_code_id` INT NOT NULL DEFAULT 1,
-    `show_code_vendor` INT NOT NULL DEFAULT 0,
+    `prod_vendor_code` INT(11) NOT NULL DEFAULT '1',
     PRIMARY KEY (prod_id)
 ){TABLE_ENGINE=MyISAM};
 
