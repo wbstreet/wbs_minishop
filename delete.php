@@ -14,7 +14,7 @@
 // prevent this file from being accessed directly
 if(!defined('WB_PATH')) die(header('Location: index.php'));  
 
-$_section_id = mysql_escape_string($section_id);
+$_section_id = $database->escapeString($section_id);
 
 $sql = "SELECT * FROM `" .TABLE_PREFIX ."mod_wbs_minishop_products` WHERE `section_id` = '".$_section_id."'";
 if ($database->query($sql)->numRows() > 0 ) {
