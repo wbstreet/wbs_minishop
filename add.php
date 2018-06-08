@@ -12,9 +12,12 @@
 
 if(!defined('WB_PATH')) die(header('Location: index.php'));  
 
-include(WB_PATH.'/modules/wbs_minishop/lib.class.minishop.php');
-$clsMinishop = new ModMinishop($page_id, $section_id);
+$name = substr(basename(__DIR__), 4);
+$class_name = "Mod".ucfirst(str_replace('_', '', ucwords($name, '_'))); // portal_obj_blog into ModPortalObjBlog
 
-$clsMinishop->add();
+include(__DIR__."/lib.class.$name.php");
+$GLOBALS['cls'.$class_name] = new $class_name($page_id, $section_id);
+
+$GLOBALS['cls'.$class_name]->add();
 
 ?>
