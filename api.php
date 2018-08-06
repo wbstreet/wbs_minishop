@@ -160,7 +160,8 @@ if ($action == 'content_confirm_order') {
             $r = $clsEmail->send_template(
                 $minishop_settings['admin_email'],
                 $clsMinishop->name."_order",
-                $vars
+                $vars
+
             );
 	
 	    if ($r[0] !== true) print_error('Письмо не отправлено! ');
@@ -786,6 +787,34 @@ if ($action == 'content_confirm_order') {
     if ($database->is_error()) print_error($database->get_error());
 
     print_success("Успешно!");
+
+} else if ($action == 'export_yml') {
+        
+    // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
+        
+    $clsYml = new WbsYML('test.xml');
+    $clsYml->startShop("Магазин Косметик", "ООО Петросян", "syeys.ru", [['id'=>'RUB', 'rate'=>'CB']], [['id'=>'1', 'name'=>'Цветы'], ['id'=>'1', 'name'=>'Деревья']]);
+
+    $r = $clsMinishop->get_product();
+    if (gettype($r) === 'string') print_error($r);
+    while($r !== null && $row = $r->fetchRow(MYSQLI_ASSOC)) {
+        $row['prod_price'] /= 100;
+        
+        $photos = $clsMinishop->get_product_photos($row['prod_id'], '350x250');
+        $photo_main = count($photos) == 0 ? $clsMinishop->urlMedia.'product_default_image.jpg' : $photos[0]['preview_image'];
+        $prod_url = WB_URL.PAGES_DIRECTORY.$row['prod_link'].PAGE_EXTENSION;
+
+        $clsYml->startOfferMarket(
+            $row['prod_id'],
+            $row['prod_is_active']==='1' ? 'true' : 'false', $row['prod_title'], $prod_url, $photo_main, $row['prod_price'], 'RUB', $row['prod_category_id']
+        );
+        $clsYml->endOffer();
+    }
+
+    $clsYml->endShop();
+    $clsYml->write();
+    
+    exit();
 
 } else {
 	print_error('Невверный action!');
