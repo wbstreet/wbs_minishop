@@ -255,6 +255,24 @@ for (photo of photos) {
         }
     }
     
+    function get_product_photos($prod_id, $preview_size) {
+       $r = select_row(
+           [$this->tbl_photos, $this->clsStorageImg->tbl_img],
+           "*",
+           "{$this->tbl_photos}.`storage_image_id` = {$this->clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$prod_id}' ORDER BY photo_is_main, photo_id DESC"
+           );
+       if (gettype($r) === 'string') return $r;
+
+       $photos = [];
+       while ($r !== null && $row = $r->fetchRow()) {
+           $row['orig_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], 'origin');
+           $row['preview_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], $preview_size);
+           $photos[] = $row;
+       }
+        
+       return $photos;
+    }
+    
     function get_product_vars($arrProduct) {
     	global $database;
 
@@ -286,19 +304,7 @@ for (photo of photos) {
 
        // фотографии
 	    
-       $r = select_row(
-           [$this->tbl_photos, $this->clsStorageImg->tbl_img],
-           "*",
-           "{$this->tbl_photos}.`storage_image_id` = {$this->clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$arrProduct['prod_id']}' ORDER BY photo_is_main, photo_id DESC"
-           );
-       if (gettype($r) === 'string') return $r;
-
-       $photos = [];
-       while ($r !== null && $row = $r->fetchRow()) {
-           $row['orig_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], 'origin');
-           $row['preview_image'] = $this->clsStorageImg->get_without_db($row['md5'], $row['ext'], '350x250');
-           $photos[] = $row;
-       }
+       $photos = $this->get_product_photos($arrProduct['prod_id'], '350x250');
         
        $photo_main = count($photos) == 0 ? $this->urlMedia.'product_default_image.jpg' : $photos[0]['preview_image'];
         
