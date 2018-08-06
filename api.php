@@ -790,10 +790,18 @@ if ($action == 'content_confirm_order') {
 
 } else if ($action == 'export_yml') {
         
-    // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
+    // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
+
         
     $clsYml = new WbsYML('test.xml');
-    $clsYml->startShop("Магазин Косметик", "ООО Петросян", "syeys.ru", [['id'=>'RUB', 'rate'=>'CB']], [['id'=>'1', 'name'=>'Цветы'], ['id'=>'1', 'name'=>'Деревья']]);
+    $clsYml->startShop(
+        "Магазин Косметик",
+        "ООО Петросян",
+        "syeys.ru",
+        [['id'=>'RUB', 'rate'=>'CB']],
+        [['id'=>'1', 'name'=>'Цветы'],
+        ['id'=>'1', 'name'=>'Деревья']]
+    )
 
     $r = $clsMinishop->get_product();
     if (gettype($r) === 'string') print_error($r);
@@ -811,8 +819,9 @@ if ($action == 'content_confirm_order') {
         $clsYml->endOffer();
     }
 
-    $clsYml->endShop();
-    $clsYml->write();
+    $clsYml->endShop();
+    $clsYml->write();
+
     
     exit();
 
