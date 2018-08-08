@@ -153,6 +153,7 @@ if(function_exists('wbs_core_include')) wbs_core_include(['functions.js', 'windo
 <input type="button" value="Категории"      onclick="W.open_by_api('window_category_edit', {data:{section_id:<?=$section_id?>, page_id:<?=$page_id?>}, url:mod_minishop.url_api, add_sheet:true})">
 <input type="button" value="Характеристики" onclick="W.open_by_api('window_property_edit', {data:{section_id:<?=$section_id?>, page_id:<?=$page_id?>}, url:mod_minishop.url_api, add_sheet:true})">
 <input type="button" value="Картинка по умолчанию" onclick="W.open('<?php echo "{$page_id}_{$section_id}_default_pic"; ?>', {text_title:'Загрузить картинку по умолчанию', add_sheet:true})">
+<input type="button" value="Экспорт" onclick="W.open_by_api('window_export', {data:{section_id:<?=$section_id?>, page_id:<?=$page_id?>}, url:mod_minishop.url_api, add_sheet:true})">
 
 <!-- Основное -->
 
