@@ -792,8 +792,10 @@ if ($action == 'content_confirm_order') {
         
     // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
 
-    header('Content-type: text/xml');
-    header('Content-Disposition: attachment; filename="yml.xml"'); // https://developer.mozilla.org/ru/docs/Web/HTTP/%D0%97%D0%B0%D0%B3%D0%BE%D0%BB%D0%BE%D0%B2%D0%BA%D0%B8/Content-Disposition
+    header('Content-type: text/xml');
+
+    header('Content-Disposition: attachment; filename="yml.xml"'); // https://developer.mozilla.org/ru/docs/Web/HTTP/%D0%97%D0%B0%D0%B3%D0%BE%D0%BB%D0%BE%D0%B2%D0%BA%D0%B8/Content-Disposition
+
 
         
     $clsYml = new WbsYML('test.xml');
@@ -828,6 +830,21 @@ if ($action == 'content_confirm_order') {
     
     exit();
 
+} else if ($action == 'window_export') {
+
+    require(WB_PATH.'/modules/admin.php');
+
+    print_success(
+        $clsMinishop->render('window_export.twig', [
+        'FTAN'=>$admin->getFTAN(),
+         'section_id'=>$section_id,
+         'page_id'=>$page_id,
+         'PAGE_SECTION_FIELDS' => $PAGE_SECTION_FIELDS,
+         'wb_url'=>WB_URL,
+      ], true),
+      ['title'=>'Экспорт']
+   );
+    
 } else {
 	print_error('Невверный action!');
 }
