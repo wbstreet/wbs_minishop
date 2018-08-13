@@ -807,7 +807,7 @@ if ($action == 'content_confirm_order') {
         
     $clsYml = new WbsYML('test.xml');
     $clsYml->startShop(
-        "Магазин Косметик",
+        WEBSITE_TITLE,
         "ООО Петросян",
         idn_decode(WB_URL)[0],
         [['id'=>'RUB', 'rate'=>'CB']],
