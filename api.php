@@ -793,19 +793,25 @@ if ($action == 'content_confirm_order') {
     // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
 
     header('Content-type: text/xml');
-
     header('Content-Disposition: attachment; filename="yml.xml"'); // https://developer.mozilla.org/ru/docs/Web/HTTP/%D0%97%D0%B0%D0%B3%D0%BE%D0%BB%D0%BE%D0%B2%D0%BA%D0%B8/Content-Disposition
 
-
+    $cats = [];
+    $r = $database->query("SELECT * FROM ".$clsMinishop->tbl_categories." WHERE 1=1");//section_id` = '$section_id'");
+    if ($database->is_error()) print_error($database->get_error());
+    while ($r !== null && $category = $r->fetchRow()) {
+        $cat = [];
+        $cat['id'] = $category['category_id'];
+        $cat['name'] = $category['category_name'];
+        $cats[] = $cat;
+    }
         
     $clsYml = new WbsYML('test.xml');
     $clsYml->startShop(
         "Магазин Косметик",
         "ООО Петросян",
-        "syeys.ru",
+        idn_decode(WB_URL)[0],
         [['id'=>'RUB', 'rate'=>'CB']],
-        [['id'=>'1', 'name'=>'Цветы'],
-        ['id'=>'1', 'name'=>'Деревья']]
+        $cats
     )
 
     $r = $clsMinishop->get_product();
@@ -819,7 +825,14 @@ if ($action == 'content_confirm_order') {
 
         $clsYml->startOfferMarket(
             $row['prod_id'],
-            $row['prod_is_active']==='1' ? 'true' : 'false', $row['prod_title'], $prod_url, $photo_main, $row['prod_price'], 'RUB', $row['prod_category_id']
+            $row['prod_is_active']==='1' ? 'true' : 'false',
+            $row['prod_title'],
+            $prod_url,
+            $photo_main,
+            $row['prod_price'],
+            'RUB',
+            $row['prod_category_id'], 
+            ['description'=>$row['prod_shortdesc']]
         );
         $clsYml->endOffer();
     }
