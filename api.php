@@ -583,10 +583,15 @@ if ($action == 'content_confirm_order') {
 
     if ($_POST['show_code_id']=='true') {$show_code_id = '1';} else {$show_code_id = '0';}
     if ($_POST['show_code_vendor']=='true') {$show_code_vendor = '1';} else {$show_code_vendor = '0';}
+
+    if ($_POST['shop_name_use_website_title']=='true') {$shop_name_use_website_title = '1';} else {$shop_name_use_website_title = '0';}
     
     $sql = 'UPDATE `'.TABLE_PREFIX.'mod_wbs_minishop_settings` SET ';
     $sql .= '`admin_email`="'          .$database->escapeString($_POST['admin_email'])          .'", ';
     $sql .= '`admin_login`="'          .$database->escapeString($_POST['admin_login'])          .'", ';
+    $sql .= '`shop_name`="'            .$database->escapeString($_POST['shop_name'])            .'", ';
+    $sql .= '`shop_org_name`="'        .$database->escapeString($_POST['shop_org_name'])        .'", ';
+    $sql .= '`shop_name_use_website_title`="'         .$database->escapeString($shop_name_use_website_title)                  .'", ';
     $sql .= '`block_html`="'           .$database->escapeString($_POST['block_html'])           .'", ';
     $sql .= '`block_css`="'            .$database->escapeString($_POST['block_css'])            .'", ';
     $sql .= '`address_self_delivery`="'.$database->escapeString($_POST['address_self_delivery']).'", ';
@@ -789,12 +794,16 @@ if ($action == 'content_confirm_order') {
     print_success("Успешно!");
 
 } else if ($action == 'export_yml') {
-        
+    
+    /* ALTER TABLE `vs_mod_minishop_settings` ADD `shop_name` VARCHAR(255) NOT NULL DEFAULT '' AFTER `admin_login`, ADD `shop_org_name` VARCHAR(255) NOT NULL DEFAULT '' AFTER `shop_name`, ADD `shop_name_use_website_title` INT(11) NOT NULL DEFAULT '0' AFTER `shop_org_name`; */
+
     // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
 
     header('Content-type: text/xml');
     header('Content-Disposition: attachment; filename="yml.xml"'); // https://developer.mozilla.org/ru/docs/Web/HTTP/%D0%97%D0%B0%D0%B3%D0%BE%D0%BB%D0%BE%D0%B2%D0%BA%D0%B8/Content-Disposition
 
+    $minishop_settings = $clsMinishop->get_settings();
+    
     $cats = [];
     $r = $database->query("SELECT * FROM ".$clsMinishop->tbl_categories." WHERE 1=1");//section_id` = '$section_id'");
     if ($database->is_error()) print_error($database->get_error());
@@ -807,8 +816,8 @@ if ($action == 'content_confirm_order') {
         
     $clsYml = new WbsYML('test.xml');
     $clsYml->startShop(
-        WEBSITE_TITLE,
-        "ООО Петросян",
+        $minishop_settings['shop_name_use_website_title'] === '1' ? WEBSITE_TITLE : $minishop_settings['shop_name'],
+        $minishop_settings['shop_org_name'],
         idn_decode(WB_URL)[0],
         [['id'=>'RUB', 'rate'=>'CB']],
         $cats

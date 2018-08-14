@@ -29,6 +29,10 @@
     <label><input type='radio' name='need_registration' value='1' {% if settings.need_registration == '1' %} checked {% endif %}>Заказ (пользователь должен быть зарегистрирован)</label><br>
     <label><input type='radio' name='need_registration' value='0' {% if settings.need_registration == '0' %} checked {% endif %}>Заявка (регистрация не требуется, отсутвует оплата, данные заказа хранятся в браузере пользователя)</label>
 
+    <br><span class="minishop_title_2">Настройки экспорта</span>
+    Название магазина: <input name="shop_name" type="text" value="{{ settings.shop_name }}"> или <input type="checkbox" {% if settings.shop_name_use_website_title == '1' %} checked {% endif %} name="shop_name_use_website_title"> Использовать заголовок сайта<br>
+    Юридическое наименование организации: <input name="shop_org_name" type="text" value="{{ settings.shop_org_name }}"><br>
+    
     <br><span class="minishop_title_2">Область действия настроек</span>
     <label><input type='radio' name='is_general_settings' value='2' {% if settings.is_general_settings == '2' %} checked {% endif %}>На всём сайте (единые настройки для всего сайта)</label> <br>
     <!--<label><input type='radio' name='is_general_settings' value='1' {% if settings.is_general_settings == '1' %} checked  {% endif %}>На всей странице</label>-->
