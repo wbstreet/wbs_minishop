@@ -824,7 +824,7 @@ if ($action == 'content_confirm_order') {
         idn_decode(WB_URL)[0],
         [['id'=>'RUB', 'rate'=>'CB']],
         $cats
-    )
+    );
 
     $r = $clsMinishop->get_product();
     if (gettype($r) === 'string') print_error($r);
