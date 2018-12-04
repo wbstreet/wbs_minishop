@@ -57,7 +57,7 @@ $common_array = [
 
 if (isset($prod_id)) {
         
-        $sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_products` WHERE ";
+        $sql = "SELECT * FROM ".$clsMinishop->tbl_products." WHERE ";
         $sql .= "`prod_id`=$prod_id AND ";
         $sql .= "`is_copy_for`=0 ";
         //$sql .= '`page_id`='.$page_id.' AND ';
@@ -89,7 +89,7 @@ if (isset($prod_id)) {
         
         // Вынимаем товары
         
-        $sql = "SELECT * FROM `".TABLE_PREFIX."mod_wbs_minishop_products` WHERE ";
+        $sql = "SELECT * FROM ".$clsMinishop->tbl_products." WHERE ";
         $sql .= "`section_id`=$section_id AND ";
         $sql .= "`is_copy_for`=0 AND ";
         //$sql .= '`page_id`='.$page_id.' AND ';

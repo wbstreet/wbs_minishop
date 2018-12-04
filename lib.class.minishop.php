@@ -11,6 +11,7 @@ class ModMinishop extends Addon {
 
     function __construct($page_id, $section_id) {
         parent::__construct('wbs_minishop', $page_id, $section_id);
+        global $admin;
         $this->tbl_settings = "`".TABLE_PREFIX."mod_wbs_minishop_settings`";
         $this->tbl_products = "`".TABLE_PREFIX."mod_wbs_minishop_products`";
         $this->tbl_categories = "`".TABLE_PREFIX."mod_wbs_minishop_categories`";
@@ -23,11 +24,11 @@ class ModMinishop extends Addon {
 
         $this->process_error = 'echo';
         $this->clsStorageImg = new WbsStorageImg();
+        $this->clsEmail = new WbsEmail($admin);
     }
     
     function install() {
-        global $clsEmail;
-        $r = $clsEmail->create_template(
+        $r = $this->clsEmail->create_template(
             ($this->name)."_order",
             "Заказ из магазина {{url}}",
             file_get_contents(__DIR__."/templates/letter_order.twig")
@@ -36,7 +37,7 @@ class ModMinishop extends Addon {
     }
 
     function uninstall() {
-        global $clsEmail, $database;
+        global $database;
     
         // delete all database search table entries made by this module
         $database->query("DELETE FROM `" .TABLE_PREFIX ."search` WHERE `name` = 'module' AND `value` = 'minishop'");
@@ -55,7 +56,7 @@ class ModMinishop extends Addon {
         rm_full_dir(WB_PATH.PAGES_DIRECTORY.'/'.$this->name);
         rm_full_dir(WB_PATH.MEDIA_DIRECTORY.'/mod_'.$this->name);
         
-        $r = $clsEmail->delete_template(($this->name)."_order");
+        $r = $this->clsEmail->delete_template(($this->name)."_order");
         return $r;
     }
 

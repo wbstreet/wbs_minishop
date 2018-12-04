@@ -795,7 +795,10 @@ if ($action == 'content_confirm_order') {
 
 } else if ($action == 'export_yml') {
     
-    /* ALTER TABLE `vs_mod_minishop_settings` ADD `shop_name` VARCHAR(255) NOT NULL DEFAULT '' AFTER `admin_login`, ADD `shop_org_name` VARCHAR(255) NOT NULL DEFAULT '' AFTER `shop_name`, ADD `shop_name_use_website_title` INT(11) NOT NULL DEFAULT '0' AFTER `shop_org_name`; */
+    /* ALTER TABLE `vs_mod_minishop_settings` ADD `shop_name` VARCHAR(255) NOT NULL DEFAULT '' AFTER `admin_login`, ADD `shop_org_name` VARCHAR(255) NOT NULL DEFAULT '' AFTER `shop_name`, ADD `shop_name_use_website_title` INT(11) NOT NULL DEFAULT '0' AFTER `shop_org_name`;
+       ALTER TABLE `vs_mod_minishop_products` ADD `prod_link` VARCHAR(255) NULL DEFAULT NULL AFTER `prod_is_hit`;
+       ALTER TABLE `vs_mod_minishop_products` ADD `is_copy_for` INT(11) NOT NULL DEFAULT '0' AFTER `prod_link`;
+    */
 
     // modules/wbs_minishop/api.php?action=export_yml&section_id=0&page_id=0
 
