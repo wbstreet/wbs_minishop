@@ -738,7 +738,7 @@ if ($action == 'content_confirm_order') {
     if (!isset($_FILES['photos']['tmp_name'])) print_error('Не выбраны фотографии');
     if (!$_FILES['photos']['tmp_name']) print_error('Не выбраны фотографии');
 
-    list($ids, $errors) = $clsStorageImg->save_many($_FILES['photos']['tmp_name']);
+    list($ids, $errors) = $clsStorageImg->save_many($_FILES['photos']['tmp_name'], ['maxsize'=>4*1024]);
 
     $img_errs = '<br>';
     if ($errors) {
