@@ -95,24 +95,15 @@ if (isset($prod_id)) {
         //$sql .= '`page_id`='.$page_id.' AND ';
         $sql .= "`prod_is_active`='1' ORDER BY `prod_category_id`, `$order_by`";
         $r = $database->query($sql);
-        $current_category_id = '';
         $prods = [];
         while($r !== null && $product = $r->fetchRow()) {
-        
-            $category_id = $product['prod_category_id'];
-            $count = $product['prod_count'];
-        
-            if ($category_id != $current_category_id) {
-                if (isset($category_array[$category_id])) echo "<h2>".$category_array[$category_id]."</h2>";
-                $current_category_id = $category_id;
-            }
-            
             $prods[] = $clsMinishop->get_product_vars($product);
         }
         
         $clsMinishop->render('frontend_product_list.twig', array_merge([
                 "order_by"=>$order_by,
                 "prods"=>$prods,
+                "categories"=>$category_array,
         ], $common_array));
 }
 ?>

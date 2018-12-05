@@ -311,6 +311,7 @@ for (photo of photos) {
         
     	return [
             "PROD_ID"             =>  $arrProduct['prod_id'],
+            "PROD_CATEGORY_ID"    =>  $arrProduct['prod_category_id'],
             "PROD_COUNT2CART"     =>  0,
             "PROD_TITLE"          =>  $arrProduct['prod_title'],
             "PROD_PRICE"          =>  $arrProduct['prod_price'] / 100,

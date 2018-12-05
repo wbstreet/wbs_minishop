@@ -33,7 +33,12 @@
 </div><br>
 
 <div class="view_products"> 
+    {% set current_category_id = 0 %}
     {% for prod in prods %}
+        {% if current_category_id != prod.PROD_CATEGORY_ID %}
+            <h2>{{ categories[prod.PROD_CATEGORY_ID] }}</h2>
+            {% set current_category_id = prod.PROD_CATEGORY_ID %}
+        {% endif %}
         {% include 'frontend_product_wrap.twig' with prod %}
     {% endfor %}
 </div>
