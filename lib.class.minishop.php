@@ -260,7 +260,7 @@ for (photo of photos) {
        $r = select_row(
            [$this->tbl_photos, $this->clsStorageImg->tbl_img],
            "*",
-           "{$this->tbl_photos}.`storage_image_id` = {$this->clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$prod_id}' ORDER BY photo_is_main, photo_id DESC"
+           "{$this->tbl_photos}.`storage_image_id` = {$this->clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$prod_id}' ORDER BY {$this->tbl_photos}.`photo_is_main` DESC"
            );
        if (gettype($r) === 'string') return $r;
 

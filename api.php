@@ -708,7 +708,7 @@ if ($action == 'content_confirm_order') {
     $r = select_row(
         [$clsMinishop->tbl_photos, $clsStorageImg->tbl_img],
         "*",
-        "{$clsMinishop->tbl_photos}.`storage_image_id` = {$clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$product_id}' ORDER BY photo_is_main, photo_id DESC"
+        "{$clsMinishop->tbl_photos}.`storage_image_id` = {$clsStorageImg->tbl_img}.`img_id` AND `prod_id`='{$product_id}' ORDER BY {$this->tbl_photos}.`photo_is_main` DESC"
         );
     if (gettype($r) === 'string') print_error($r);
 
