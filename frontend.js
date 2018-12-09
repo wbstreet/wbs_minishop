@@ -5,6 +5,19 @@ License: public domain :)
 
 */
 
+function show_photo(e) {
+    var src = e.target.src;
+    var main_pic = e.target.closest('.block_photos').querySelector('.product_main_pic');
+    if (src) main_pic.src = src;
+}
+function show_photo_set_ev() {
+    var photos = document.querySelector('.block_photos>.photos')
+    if (photos) {
+        photos.addEventListener('click',show_photo);
+        photos.addEventListener('mouseover',show_photo);
+    }
+}
+
 function mod_minishop_isHasFavourite(org_id) {
         return localStorage.hasOwnProperty(org_id);
 }

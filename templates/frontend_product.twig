@@ -23,7 +23,20 @@
 
 <h1 style="text-align:center">{{ PROD_TITLE }}</h1>
 
+<br><br>
+
 <div class='product' id='product{{ PROD_ID }}' data-prod_id='{{ PROD_ID }}' data-section_id='{{ section_id }}' data-page_id='{{ page_id }}'>
+    <div class='block_photos' style='float:left;text-align:center;width:50%;'>
+        <img class='product_main_pic fm' src='{{PROD_MAIN_IMG_SRC}}'>
+        <br>
+        <div class='photos' style='display:inline-block;width: 100%;overflow-x: auto;'>
+            <nobr>
+            {% for photo in PROD_PHOTOS %}
+                  <img src='{{ photo.preview_image }}' style='height:40px;width:auto;cursor:pointer;'>
+            {% endfor %}
+            </nobr>
+        </div>
+    </div>
     <div style="text-align:right">
         {{ PROD_SHORT_DESCR }} <br>
         Цена: {{ PROD_PRICE }} {{ CURRENCY }}
@@ -31,10 +44,10 @@
         {% if settings.show_code_id == 1 %}  <br> Идентификатор: {{ PROD_ID }} {% endif %}
     </div>
 
-    <br>
+    <br><br>
 
      <div>
-        {{ PROD_DESCR }}
+        {{ PROD_DESCR | raw }}
     </div>
 
     <br>
@@ -46,3 +59,4 @@
 
 </div>
 <script src="{{ WB_URL }}/modules/wbs_minishop/frontend_after.js" defer></script>
+<script>show_photo_set_ev();</script>

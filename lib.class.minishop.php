@@ -128,17 +128,7 @@ class ModMinishop extends Addon {
             <input class='button_add2cart2' type='button' value='Добавить' onclick='mod_minishop.cart_add(this)'>
         </span>
 
-       <script>
-function show_photo(e) {
-        e.target.closest('.block_photos').querySelector('.product_main_pic').src=e.target.src
-}
-
-var photos = Array.from(document.querySelector('.block_photos>.photos').children);
-for (photo of photos) {
-    photo.addEventListener('click',show_photo);
-    photo.addEventListener('mouseover',show_photo);
-}
-       </script>
+       <script>show_photo_set_ev();</script>
         
         ";
         $window_css = "";
