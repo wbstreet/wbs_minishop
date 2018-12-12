@@ -57,11 +57,11 @@ $common_array = [
 
 if (isset($prod_id)) {
         
-        $sql = "SELECT * FROM ".$clsMinishop->tbl_products." WHERE ";
-        $sql .= "`prod_id`=$prod_id AND ";
-        $sql .= "`is_copy_for`=0 ";
-        //$sql .= '`page_id`='.$page_id.' AND ';
-        $r = $database->query($sql);
+        $r = $clsMinishop->get_obj([
+            'prod_id'=>$prod_id,
+            'is_copy_for'=>'0',
+        ]);
+
         $current_category_id = '';
         if ($r !== null) {
                 $prod = $r->fetchRow(MYSQL_ASSOC);
@@ -89,12 +89,13 @@ if (isset($prod_id)) {
         
         // Вынимаем товары
         
-        $sql = "SELECT * FROM ".$clsMinishop->tbl_products." WHERE ";
-        $sql .= "`section_id`=$section_id AND ";
-        $sql .= "`is_copy_for`=0 AND ";
-        //$sql .= '`page_id`='.$page_id.' AND ';
-        $sql .= "`prod_is_active`='1' ORDER BY `prod_category_id`, `$order_by`";
-        $r = $database->query($sql);
+        $r = $clsMinishop->get_obj([
+            'section_id'=>$section_id,
+            'is_copy_for'=>'0',
+            'prod_is_active'=>'1',
+            'order_by'=>['prod_category_id', $order_by]
+        ]);
+
         $prods = [];
         while($r !== null && $product = $r->fetchRow()) {
             $prods[] = $clsMinishop->get_product_vars($product);

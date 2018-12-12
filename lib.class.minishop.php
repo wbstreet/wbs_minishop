@@ -245,6 +245,27 @@ class ModMinishop extends Addon {
         } else if ($this->process_error == 'fatal') {
         }
     }
+
+    
+    function get_obj($sets=[], $only_count=false) {
+
+        $tables = [$this->tbl_products];
+
+        $where = [
+        ];
+        //$this->_getobj_where($sets, $where);
+        
+        $where_opts = [
+                'section_id'=>"{$this->tbl_products}.`section_id`",
+                'is_copy_for'=>"{$this->tbl_products}.`is_copy_for`",
+                'prod_is_active'=>"{$this->tbl_products}.`prod_is_active`",
+                'prod_id'=>"{$this->tbl_products}.`prod_id`",
+        ];
+        
+        $where_find = ['prod_title'=>"{$this->tbl_products}.`prod_title`", 'prod_description'=>"{$this->tbl_products}.`prod_description`"];
+        
+        return get_obj($tables, $where, $where_opts, $where_find, $sets, $only_count);
+    }
     
     function get_product_photos($prod_id, $preview_size) {
        $r = select_row(
