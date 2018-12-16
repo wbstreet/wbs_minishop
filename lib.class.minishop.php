@@ -99,12 +99,12 @@ class ModMinishop extends Addon {
         ";
         $window_html = "
         <div class='block_photos' style='float:left;text-align:center;width:50%;'>
-            <img class='product_main_pic fm' src='{{PROD_MAIN_IMG_SRC}}'>
+            <a class=\"fm\" href=\"{{PROD_MAIN_ORIG_IMG_SRC}}\"><img class='product_main_pic' src='{{PROD_MAIN_IMG_SRC}}'></a>
             <br>
             <div class='photos' style='display:inline-block;width: 100%;overflow-x: auto;'>
                 <nobr>
                 {% for photo in PROD_PHOTOS %}
-                      <img src='{{ photo.preview_image }}' style='height:40px;width:auto;cursor:pointer;'>
+                      <a class=\"fm\" href=\"{{ photo.orig_image }}\"><img src='{{ photo.preview_image }}' style='height:40px;width:auto;cursor:pointer;'></a>
                 {% endfor %}
                 </nobr>
             </div>
