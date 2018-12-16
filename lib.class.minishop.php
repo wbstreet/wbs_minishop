@@ -319,6 +319,7 @@ class ModMinishop extends Addon {
        $photos = $this->get_product_photos($arrProduct['prod_id'], '350x250');
         
        $photo_main = count($photos) == 0 ? $this->urlMedia.'product_default_image.jpg' : $photos[0]['preview_image'];
+       $photo_orig_main = count($photos) == 0 ? $this->urlMedia.'product_default_image.jpg' : $photos[0]['orig_image'];
         
     	return [
             "PROD_ID"             =>  $arrProduct['prod_id'],
@@ -330,6 +331,7 @@ class ModMinishop extends Addon {
             "PROD_SHORT_DESCR"    =>  $arrProduct['prod_shortdesc'],
             "PROD_DESCR"          =>  preg_replace("/\n/", "<br>", $arrProduct['prod_desc']),
             "PROD_MAIN_IMG_SRC"   =>  $photo_main,
+            "PROD_MAIN_ORIG_IMG_SRC"   =>  $photo_orig_main,
             "ONCLICK_OPEN_WINDOW" =>  " onclick=\"W.open_by_api('window_product_info', {data: {product_id:'{$arrProduct['prod_id']}', page_id:'{$this->page_id}', section_id:'{$this->section_id}'}, url:mod_minishop.url_api, add_sheet:true})\"",//" onclick=\"minishop_show_window(this)\"",
             "PROD_PROPS"          =>  $props,
             'PROD_PHOTOS'         =>  $photos,

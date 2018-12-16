@@ -7,8 +7,10 @@ License: public domain :)
 
 function show_photo(e) {
     var src = e.target.src;
+    var orig_src = e.target.parentElement.href;
     var main_pic = e.target.closest('.block_photos').querySelector('.product_main_pic');
     if (src) main_pic.src = src;
+    if (orig_src) main_pic.parentElement.href = orig_src;
 }
 function show_photo_set_ev() {
     var photos = document.querySelector('.block_photos>.photos')
